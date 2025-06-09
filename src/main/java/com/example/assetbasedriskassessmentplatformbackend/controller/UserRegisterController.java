@@ -36,6 +36,7 @@ public class UserRegisterController {
         user.setAssetUserName(registerDTO.getAssetUserName());
         user.setAssetUserEmail(registerDTO.getAssetUserEmail());
         user.setAssetUserPwd(registerDTO.getAssetUserPwd());
+        System.out.println(user);
 
         if (userMapper.findByUseremail(registerDTO.getAssetUserEmail()) != null) {
             response.put("success", false);

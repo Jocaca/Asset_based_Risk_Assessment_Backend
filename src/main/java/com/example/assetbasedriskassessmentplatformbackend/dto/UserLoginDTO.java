@@ -1,31 +1,32 @@
 package com.example.assetbasedriskassessmentplatformbackend.dto;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-
-
 public class UserLoginDTO {
     private String assetUserName;
     private String assetUserPwd;
 
-    public String getPassword() {
-        return assetUserPwd;
-    }
-
-    public void setPassword(String assetUserPwd) {
-        this.assetUserPwd = assetUserPwd;
-    }
-
-    public String getUsername() {
+    public String getAssetUserName() {
+        System.out.println("资产用户名: " + assetUserName);
         return assetUserName;
     }
 
-    public void setUsername(String assetUserName) {
+    public void setAssetUserName(String assetUserName) {
         this.assetUserName = assetUserName;
+    }
+
+    public String getAssetUserPwd() {
+        System.out.println("资产用户密码: " + assetUserPwd);
+        return assetUserPwd;
+    }
+
+    public void setAssetUserPwd(String assetUserPwd) {
+        this.assetUserPwd = assetUserPwd;
     }
 
     @Override
     public String toString() {
-        return "LoginDTO{assetUserName='***', assetUserPwd='***'}"; // 不打印真实密码
+        return "UserLoginDTO{" +
+                "assetUserName='" + assetUserName + '\'' +
+                ", assetUserPwd='" + assetUserPwd + '\'' +
+                '}';
     }
-
 }
