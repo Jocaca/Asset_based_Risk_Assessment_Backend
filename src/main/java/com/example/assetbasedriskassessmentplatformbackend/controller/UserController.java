@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@CrossOrigin(origins = "http://localhost:8091") // 允许跨域
+//@CrossOrigin(origins = "http://localhost:8080") // 允许跨域
+@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired // 注入

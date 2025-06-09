@@ -15,8 +15,6 @@ public class User {
     private String assetUserPwd;
     private String assetUserEmail;
     private int assetUserLevel;
-    private LocalDateTime createdAt;
-    private LocalDateTime updateAt;
 
     public int getAssetUserId() {
         return assetUserId;
@@ -58,22 +56,6 @@ public class User {
         this.assetUserLevel = assetUserLevel;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(LocalDateTime updateAt) {
-        this.updateAt = updateAt;
-    }
-
     @Override
     public String toString() {
         return "User{" +
@@ -82,8 +64,6 @@ public class User {
                 ", assetUserPwd='" + assetUserPwd + '\'' +
                 ", assetUserEmail='" + assetUserEmail + '\'' +
                 ", assetUserLevel=" + assetUserLevel +
-                ", createdAt=" + createdAt +
-                ", updateAt=" + updateAt +
                 '}';
     }
 
