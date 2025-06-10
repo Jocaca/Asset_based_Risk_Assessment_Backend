@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-//@CrossOrigin(origins = "*") // 允许跨域
 @RestController
 @RequestMapping("/api")
 public class UserRegisterController {
