@@ -1,0 +1,184 @@
+package com.example.assetbasedriskassessmentplatformbackend.controller;
+
+import com.example.assetbasedriskassessmentplatformbackend.Service.AssetService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/asset")
+@CrossOrigin(origins = "*")
+public class AssetController {
+
+    @Autowired
+    private AssetService assetService;
+
+    @GetMapping("/Allassets")
+    public ResponseEntity<Map<String, Object>> getAllAssets(@RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "15") int size) {
+        System.out.println("getAllAssets");
+        return assetService.getAllAssets(page,size);
+    }
+    @GetMapping("/filteredAssets")
+    public ResponseEntity<Map<String, Object>> getFilteredAssets(@RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "15") int size,
+                                                                 @RequestParam(required = false) String assetType,  // ✅ 允许为空
+                                                                 @RequestParam(required = false) String emptyField,
+                                                                 @RequestParam(required = false) String importance,
+                                                                 @RequestParam(required = false) String status) {
+        System.out.println("getFilteredAssets");
+        int assettype = 0;
+        if (assetType == null) {assettype=-1;}
+        else {
+            switch (assetType) {
+                case "Software":
+                    assettype = 0;
+                    break;
+                case "Physical":
+                    assettype = 1;
+                    break;
+                case "Information":
+                    assettype = 2;
+                    break;
+                case "People":
+                    assettype = 3;
+                    break;
+                default:
+                    assettype = -1;
+            }
+        }
+        int emptyfield = 0;
+        if(emptyField == null) {emptyfield=-1;}
+        else {
+            switch (emptyField) {
+                case "Yes":
+                    emptyfield = 1;
+                    break;
+                case "No":
+                    emptyfield = 0;
+                    break;
+                default:
+                    emptyfield = -1;
+            }
+        }
+        int Importance = 0;
+        if(importance == null) {Importance=-1;}
+        else {
+            switch (importance) {
+                case "Extremely High":
+                    Importance = 3;
+                    break;
+                case "High":
+                    Importance = 2;
+                    break;
+                case "Medium":
+                    Importance = 1;
+                    break;
+                case "Low":
+                    Importance = 0;
+                    break;
+                default:
+                    Importance = -1;
+            }
+        }
+        int Status = 0;
+        if(status==null) {Status=-1;}
+        else {
+            switch (status) {
+                case "Active":
+                    Status = 0;
+                    break;
+                case "Decommissioned":
+                    Status = 1;
+                    break;
+                default:
+                    Status = -1;
+            }
+        }
+        return assetService.getFilteredAssets(page,size,assettype,emptyfield,Importance,Status);
+    }
+    @GetMapping("/assets_count")
+    public ResponseEntity<Map<String, Object>> assetsCount() {
+        System.out.println("assetsCount");
+        return assetService.assetsCount();
+    }
+    @GetMapping("/filter_assets_count")
+    public ResponseEntity<Map<String, Object>> FilterAssetCount(@RequestParam(required = false) String assetType,  // ✅ 允许为空
+                                                                @RequestParam(required = false) String emptyField,
+                                                                @RequestParam(required = false) String importance,
+                                                                @RequestParam(required = false) String status) {
+        System.out.println("filter_assets_count");
+        int assettype = 0;
+        if (assetType == null) {assettype=-1;}
+        else {
+            switch (assetType) {
+                case "Software":
+                    assettype = 0;
+                    break;
+                case "Physical":
+                    assettype = 1;
+                    break;
+                case "Information":
+                    assettype = 2;
+                    break;
+                case "People":
+                    assettype = 3;
+                    break;
+                default:
+                    assettype = -1;
+            }
+        }
+        int emptyfield = 0;
+        if(emptyField == null) {emptyfield=-1;}
+        else {
+            switch (emptyField) {
+                case "Yes":
+                    emptyfield = 1;
+                    break;
+                case "No":
+                    emptyfield = 0;
+                    break;
+                default:
+                    emptyfield = -1;
+            }
+        }
+        int Importance = 0;
+        if(importance == null) {Importance=-1;}
+        else {
+            switch (importance) {
+                case "Extremely High":
+                    Importance = 3;
+                    break;
+                case "High":
+                    Importance = 2;
+                    break;
+                case "Medium":
+                    Importance = 1;
+                    break;
+                case "Low":
+                    Importance = 0;
+                    break;
+                default:
+                    Importance = -1;
+            }
+        }
+        int Status = 0;
+        if(status==null) {Status=-1;}
+        else {
+            switch (status) {
+                case "Active":
+                    Status = 0;
+                    break;
+                case "Decommissioned":
+                    Status = 1;
+                    break;
+                default:
+                    Status = -1;
+            }
+        }
+        return assetService.FilterAssetCount(assettype,emptyfield,Importance,Status);
+    }
+}

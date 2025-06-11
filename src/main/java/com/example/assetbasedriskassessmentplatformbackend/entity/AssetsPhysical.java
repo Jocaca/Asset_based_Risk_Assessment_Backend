@@ -14,13 +14,15 @@ public class AssetsPhysical extends AssetsBasicInfo {
     private Integer fixedPhysicalAsset; // 0=Yes,1=No
 
     @Column(name = "Asset_category")
-    private Integer assetCategory; // 0=Buildings & Structures, 1=Production Equipment & Machinery, etc.
+    private Integer assetCategory;
+    // 0=Buildings & Structures, 1=Production Equipment & Machinery, 2=Office Equipment, 3=Transportation Vehicles 4=Network & IT Infrastructure 5=Power & Utility Equipment 6=Security Equipment
 
     @Column(name = "location")
     private String location;
 
     @Column(name = "Asset_category2")
-    private Integer assetCategory2; // 0=Mobile Electronic Devices, etc.
+    private Integer assetCategory2;
+    // 0=Mobile Electronic Devices, 2=Temporary Facilities and Tools,3=Transportation and Logistics Asset,4=Laboratory and Production Consumables,5=Security and Emergency Equipment,6=Other High-Mobility Assets
 
     @Column(name = "Current_holder")
     private String currentHolder;
@@ -47,5 +49,9 @@ public class AssetsPhysical extends AssetsBasicInfo {
     private Integer depreciationPeriod;
 
     @Column(name = "Maintenance_cycle")
-    private Integer maintenanceCycle; // 0=Daily, Weekly, etc.
+    private Integer maintenanceCycle;
+//    --     0=Daily, Weekly, Every 72 Operating Hours
+//--     1=Monthly, Quarterly, Every 5000 km
+//--     2= Annually, Biannually, Every 5 Years
+//--     3=As Needed, After Event, On Failure
 }

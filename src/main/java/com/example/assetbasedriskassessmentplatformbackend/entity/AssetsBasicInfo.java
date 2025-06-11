@@ -20,7 +20,7 @@ public class AssetsBasicInfo {
     private String assetName;
 
     @Column(name = "asset_type")
-    private Integer assetType; // 0=null,1=software,2=physical,3=information,4=people
+    private Integer assetType; // 0=software,1=physical,2=information,3=people
 
     @ManyToOne
     @JoinColumn(name = "asset_owner", referencedColumnName = "assetUserId")
@@ -47,6 +47,8 @@ public class AssetsBasicInfo {
     @Column(name = "QStatus", nullable = false)
     private Integer qStatus; // 0=in_progress, 1=finished
 
+    @Column(name = "empty_field")
+    private Integer emptyFields; //0=No,1=Yes
 //    @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Date createdAt;
