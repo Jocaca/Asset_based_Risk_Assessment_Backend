@@ -24,6 +24,15 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             @Param("status") Integer status);
 
     @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
+            "(:assetType = -1 OR a.assetType = :assetType) AND " +
+            "(:status = -1 OR a.status = :status) AND " +
+            "(:qstatus = -1 OR a.qStatus = :qstatus)")
+    long countWithFilters_2(
+            @Param("assetType") Integer assetType,
+            @Param("status") Integer status,
+            @Param("qstatus") Integer qstatus);
+
+    @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
             "LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(a.assetOwner.assetUserName) LIKE LOWER(CONCAT('%', :search, '%'))")
     long countWithSearch(@Param("search") String search);
@@ -38,12 +47,22 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             @Param("emptyField") int emptyField,
             @Param("importance") int importance,
             @Param("status") int status,
-            Pageable pageable); // 改用 Pageable 分页
+            Pageable pageable);
 
     @Query("SELECT a FROM AssetsBasicInfo a WHERE " +
             "LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(a.assetOwner.assetUserName) LIKE LOWER(CONCAT('%', :search, '%'))")
     List<AssetsBasicInfo> findSearchAssets(
             @Param("search") String search,
-            Pageable pageable); // 改用 Pageable 分页
+            Pageable pageable);
+
+    @Query("SELECT a FROM AssetsBasicInfo a " +
+            "WHERE (:assetType = -1 OR a.assetType = :assetType) " +
+            "AND (:qstatus = -1 OR a.qStatus = :qstatus) " +
+            "AND (:status = -1 OR a.status = :status)")
+    List<AssetsBasicInfo> findFilteredAssets_2(
+            @Param("assetType") Integer assetType,
+            @Param("status") Integer status,
+            @Param("qstatus") Integer qstatus,
+            Pageable pageable);
 }

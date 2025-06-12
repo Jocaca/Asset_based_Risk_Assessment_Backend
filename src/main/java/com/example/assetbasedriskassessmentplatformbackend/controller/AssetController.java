@@ -100,6 +100,63 @@ public class AssetController {
         }
         return assetService.getFilteredAssets(page,size,assettype,emptyfield,Importance,Status);
     }
+    @GetMapping("/filteredAssets_2")
+    public ResponseEntity<Map<String, Object>> getFilteredAssets_2(@RequestParam(defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "15") int size,
+                                                                   @RequestParam(required = false) String assetType,
+                                                                   @RequestParam(required = false) String status,
+                                                                   @RequestParam(required = false) String qstatus) {
+        System.out.println("getFilteredAssets_2");
+        int assettype = 0;
+        if (assetType == null) {assettype=-1;}
+        else {
+            switch (assetType) {
+                case "Software":
+                    assettype = 0;
+                    break;
+                case "Physical":
+                    assettype = 1;
+                    break;
+                case "Information":
+                    assettype = 2;
+                    break;
+                case "People":
+                    assettype = 3;
+                    break;
+                default:
+                    assettype = -1;
+            }
+        }
+        int Qstatus = 0;
+        if(qstatus == null) {Qstatus=-1;}
+        else {
+            switch (qstatus) {
+                case "Finished":
+                    Qstatus = 1;
+                    break;
+                case "In-progress":
+                    Qstatus = 0;
+                    break;
+                default:
+                    Qstatus = -1;
+            }
+        }
+        int Status = 0;
+        if(status==null) {Status=-1;}
+        else {
+            switch (status) {
+                case "Active":
+                    Status = 0;
+                    break;
+                case "Decommissioned":
+                    Status = 1;
+                    break;
+                default:
+                    Status = -1;
+            }
+        }
+        return assetService.getFilteredAssets_2(page,size,assettype,Status,Qstatus);
+    }
     @GetMapping("/searchAssets")
     public ResponseEntity<Map<String, Object>> getSearchAssets(@RequestParam(defaultValue = "0") int page,
                                                             @RequestParam(defaultValue = "15") int size,
@@ -192,5 +249,60 @@ public class AssetController {
     public ResponseEntity<Map<String, Object>> SearchAssetsCount(@RequestParam String searchTerm) {
         System.out.println("SearchAssetsCount");
         return assetService.SearchAssetsCount(searchTerm);
+    }
+    @GetMapping("/filter_assets_count_2")
+    public ResponseEntity<Map<String, Object>> FilterAssetCount_2(@RequestParam(required = false) String assetType,
+                                                                @RequestParam(required = false) String status,
+                                                                  @RequestParam(required = false) String qstatus) {
+        System.out.println("filter_assets_count_2");
+        int assettype = 0;
+        if (assetType == null) {assettype=-1;}
+        else {
+            switch (assetType) {
+                case "Software":
+                    assettype = 0;
+                    break;
+                case "Physical":
+                    assettype = 1;
+                    break;
+                case "Information":
+                    assettype = 2;
+                    break;
+                case "People":
+                    assettype = 3;
+                    break;
+                default:
+                    assettype = -1;
+            }
+        }
+        int Qstatus = 0;
+        if(qstatus == null) {Qstatus=-1;}
+        else {
+            switch (qstatus) {
+                case "Finished":
+                    Qstatus = 1;
+                    break;
+                case "In-progress":
+                    Qstatus = 0;
+                    break;
+                default:
+                    Qstatus = -1;
+            }
+        }
+        int Status = 0;
+        if(status==null) {Status=-1;}
+        else {
+            switch (status) {
+                case "Active":
+                    Status = 0;
+                    break;
+                case "Decommissioned":
+                    Status = 1;
+                    break;
+                default:
+                    Status = -1;
+            }
+        }
+        return assetService.FilterAssetCount_2(assettype,Status,Qstatus);
     }
 }
