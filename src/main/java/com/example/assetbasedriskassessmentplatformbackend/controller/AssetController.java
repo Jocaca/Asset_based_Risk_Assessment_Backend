@@ -100,6 +100,13 @@ public class AssetController {
         }
         return assetService.getFilteredAssets(page,size,assettype,emptyfield,Importance,Status);
     }
+    @GetMapping("/searchAssets")
+    public ResponseEntity<Map<String, Object>> getSearchAssets(@RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "15") int size,
+                                                               @RequestParam String searchTerm) {
+        System.out.println("getSearchAssets");
+        return assetService.getSearchAssets(page,size,searchTerm);
+    }
     @GetMapping("/assets_count")
     public ResponseEntity<Map<String, Object>> assetsCount() {
         System.out.println("assetsCount");
@@ -180,5 +187,10 @@ public class AssetController {
             }
         }
         return assetService.FilterAssetCount(assettype,emptyfield,Importance,Status);
+    }
+    @GetMapping("/search_assets_count")
+    public ResponseEntity<Map<String, Object>> SearchAssetsCount(@RequestParam String searchTerm) {
+        System.out.println("SearchAssetsCount");
+        return assetService.SearchAssetsCount(searchTerm);
     }
 }

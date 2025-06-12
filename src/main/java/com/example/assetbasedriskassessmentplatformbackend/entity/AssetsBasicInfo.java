@@ -32,7 +32,7 @@ public class AssetsBasicInfo {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "SWID")
+    @Column(name = "swid")
     private String swid;
 
     @Column(name = "status")
@@ -41,10 +41,10 @@ public class AssetsBasicInfo {
     @Column(name = "improtance")
     private Integer importance; // 0=Low,1=Medium,2=High,3=Extremely High
 
-    @Column(name = "Associated_assets")
+    @Column(name = "associated_assets")
     private String associatedAssets;
 
-    @Column(name = "QStatus", nullable = false)
+    @Column(name = "qstatus", nullable = false)
     private Integer qStatus; // 0=in_progress, 1=finished
 
     @Column(name = "empty_field")

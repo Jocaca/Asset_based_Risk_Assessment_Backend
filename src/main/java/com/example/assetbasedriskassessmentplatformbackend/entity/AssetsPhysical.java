@@ -13,7 +13,7 @@ public class AssetsPhysical extends AssetsBasicInfo {
     @Column(name = "fixed_physical_asset", nullable = false)
     private Integer fixedPhysicalAsset; // 0=Yes,1=No
 
-    @Column(name = "Asset_category")
+    @Column(name = "asset_category")
     private Integer assetCategory;
     // 0=Buildings & Structures, 1=Production Equipment & Machinery, 2=Office Equipment, 3=Transportation Vehicles 4=Network & IT Infrastructure 5=Power & Utility Equipment 6=Security Equipment
 

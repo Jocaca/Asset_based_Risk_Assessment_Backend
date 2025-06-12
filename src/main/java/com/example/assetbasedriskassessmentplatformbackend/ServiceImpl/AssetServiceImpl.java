@@ -39,10 +39,10 @@ public class AssetServiceImpl implements AssetService {
                         assetMap.put("name", asset.getAssetName());
                         int type =asset.getAssetType();
                         switch (type){
-                            case 1: assetMap.put("assetType", "Software");break;
-                            case 2: assetMap.put("assetType", "Physical");break;
-                            case 3: assetMap.put("assetType", "Information");break;
-                            case 4: assetMap.put("assetType", "People");break;
+                            case 0: assetMap.put("assetType", "Software");break;
+                            case 1: assetMap.put("assetType", "Physical");break;
+                            case 2: assetMap.put("assetType", "Information");break;
+                            case 3: assetMap.put("assetType", "People");break;
                         }
                         assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());
                         assetMap.put("status", asset.getStatus()==0?"Active":"Decommissioned");
@@ -83,9 +83,11 @@ public class AssetServiceImpl implements AssetService {
         Map<String, Object> response = new HashMap<>();
 
         try {
-//            Pageable pageable = PageRequest.of(page, size);
+            Pageable pageable = PageRequest.of(page, size);
 
-            List<AssetsBasicInfo> assetsPage = assetBasicInfoRepository.findFilteredAssetsNative(assetType,emptyField,importance,status,page*size,size);
+            List<AssetsBasicInfo> assetsPage = assetBasicInfoRepository.findFilteredAssets(assetType,emptyField,importance,status,pageable);
+//            List<AssetsBasicInfo> assetsPage = assetBasicInfoRepository.findFilteredAssetsNative(assetType,emptyField,importance,status,page*size,size);
+//            System.out.println(assetsPage);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             // 转换数据格式以匹配前端期望的结构
@@ -97,10 +99,64 @@ public class AssetServiceImpl implements AssetService {
                         assetMap.put("name", asset.getAssetName());
                         int type = asset.getAssetType();
                         switch (type) {
-                            case 1: assetMap.put("assetType", "Software"); break;
-                            case 2: assetMap.put("assetType", "Physical"); break;
-                            case 3: assetMap.put("assetType", "Information"); break;
-                            case 4: assetMap.put("assetType", "People"); break;
+                            case 0: assetMap.put("assetType", "Software"); break;
+                            case 1: assetMap.put("assetType", "Physical"); break;
+                            case 2: assetMap.put("assetType", "Information"); break;
+                            case 3: assetMap.put("assetType", "People"); break;
+                        }
+                        assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());
+                        assetMap.put("status", asset.getStatus() == 0 ? "Active" : "Decommissioned");
+
+                        switch (asset.getEmptyFields()) {
+                            case 0: assetMap.put("emptyFields", "No"); break;
+                            case 1: assetMap.put("emptyFields", "Yes"); break;
+                        }
+
+                        int assetImportance = asset.getImportance();
+                        switch (assetImportance) {
+                            case 0: assetMap.put("importance", "Low"); break;
+                            case 1: assetMap.put("importance", "Medium"); break;
+                            case 2: assetMap.put("importance", "High"); break;
+                            case 3: assetMap.put("importance", "Extremely High"); break;
+                        }
+                        return assetMap;
+                    })
+                    .collect(Collectors.toList());
+
+            response.put("success", true);
+            response.put("data", formattedAssets);
+//            response.put("totalElements", assetsPage.getTotalElements());
+//            response.put("totalPages", assetsPage.getTotalPages());
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "获取过滤资产数据失败: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    public ResponseEntity<Map<String, Object>> getSearchAssets(int page,int size,String search){
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+
+            List<AssetsBasicInfo> assetsPage = assetBasicInfoRepository.findSearchAssets(search,pageable);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            // 转换数据格式以匹配前端期望的结构
+            List<Map<String, Object>> formattedAssets = assetsPage.stream()
+                    .map(asset -> {
+                        Map<String, Object> assetMap = new HashMap<>();
+                        assetMap.put("id", asset.getAssetId());
+                        assetMap.put("dateAdded", dateFormat.format(asset.getUpdatedAt()));
+                        assetMap.put("name", asset.getAssetName());
+                        int type = asset.getAssetType();
+                        switch (type) {
+                            case 0: assetMap.put("assetType", "Software"); break;
+                            case 1: assetMap.put("assetType", "Physical"); break;
+                            case 2: assetMap.put("assetType", "Information"); break;
+                            case 3: assetMap.put("assetType", "People"); break;
                         }
                         assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());
                         assetMap.put("status", asset.getStatus() == 0 ? "Active" : "Decommissioned");
@@ -163,4 +219,20 @@ public class AssetServiceImpl implements AssetService {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+    public ResponseEntity<Map<String, Object>> SearchAssetsCount(String search){
+        Map<String, Object> response = new HashMap<>();
+        try {
+            long count = assetBasicInfoRepository.countWithSearch(search);
+            System.out.println(count);
+            response.put("success", true);
+            response.put("count", count);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "获取搜索数量失败: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
 }

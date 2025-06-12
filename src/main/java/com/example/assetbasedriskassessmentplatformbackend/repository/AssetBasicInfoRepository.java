@@ -23,19 +23,27 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             @Param("importance") Integer importance,
             @Param("status") Integer status);
 
-    @Query(value = "SELECT * FROM assets_basic_info a WHERE " +
-            "(:assetType = -1 OR a.asset_type = :assetType) AND " +
-            "(:emptyField = -1 OR a.empty_field = :emptyField) AND " +
-            "(:importance = -1 OR a.improtance = :importance) AND " +
-            "(:status = -1 OR a.status = :status) " +
-            "LIMIT :limit OFFSET :offset",  // MySQL/PostgreSQL 语法
-            nativeQuery = true)
-    List<AssetsBasicInfo> findFilteredAssetsNative(
+    @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
+            "LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(a.assetOwner.assetUserName) LIKE LOWER(CONCAT('%', :search, '%'))")
+    long countWithSearch(@Param("search") String search);
+
+    @Query("SELECT a FROM AssetsBasicInfo a " +
+            "WHERE (:assetType = -1 OR a.assetType = :assetType) " +
+            "AND (:emptyField = -1 OR a.emptyFields = :emptyField) " +
+            "AND (:importance = -1 OR a.importance = :importance) " +
+            "AND (:status = -1 OR a.status = :status)")
+    List<AssetsBasicInfo> findFilteredAssets(
             @Param("assetType") int assetType,
             @Param("emptyField") int emptyField,
             @Param("importance") int importance,
             @Param("status") int status,
-            @Param("offset") int offset,
-            @Param("limit") int limit
-    );
+            Pageable pageable); // 改用 Pageable 分页
+
+    @Query("SELECT a FROM AssetsBasicInfo a WHERE " +
+            "LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(a.assetOwner.assetUserName) LIKE LOWER(CONCAT('%', :search, '%'))")
+    List<AssetsBasicInfo> findSearchAssets(
+            @Param("search") String search,
+            Pageable pageable); // 改用 Pageable 分页
 }

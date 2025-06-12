@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 @PrimaryKeyJoinColumn(name = "asset_id")
 public class AssetsInformation extends AssetsBasicInfo {
-    @Column(name = "Asset_category", nullable = false)
+    @Column(name = "asset_category", nullable = false)
     private Integer assetCategory; // 0=Database, 1=Document, 2=Patent
 
     @Column(name = "Retention_policy")
