@@ -2,7 +2,11 @@ package com.example.assetbasedriskassessmentplatformbackend.ServiceImpl;
 
 import com.example.assetbasedriskassessmentplatformbackend.Service.AssetService;
 import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsBasicInfo;
+import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsInformation;
+import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsPhysical;
 import com.example.assetbasedriskassessmentplatformbackend.repository.AssetBasicInfoRepository;
+import com.example.assetbasedriskassessmentplatformbackend.repository.AssetInformationRepository;
+import com.example.assetbasedriskassessmentplatformbackend.repository.AssetPhysicalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +25,10 @@ import java.util.stream.Collectors;
 public class AssetServiceImpl implements AssetService {
     @Autowired
     private AssetBasicInfoRepository assetBasicInfoRepository;
+    @Autowired
+    private AssetInformationRepository assetInformationRepository;
+    @Autowired
+    private AssetPhysicalRepository assetPhysicalRepository;
 
     public ResponseEntity<Map<String, Object>> getAllAssets(int page,int size){
         Map<String, Object> response = new HashMap<>();
@@ -40,8 +48,25 @@ public class AssetServiceImpl implements AssetService {
                         int type =asset.getAssetType();
                         switch (type){
                             case 0: assetMap.put("assetType", "Software");break;
-                            case 1: assetMap.put("assetType", "Physical");break;
-                            case 2: assetMap.put("assetType", "Information");break;
+                            case 1: assetMap.put("assetType", "Physical");
+                                AssetsPhysical assetsPhysical = assetPhysicalRepository
+                                        .findById(asset.getAssetId().longValue())
+                                        .orElse(null); // 如果找不到返回 null
+                                switch (assetsPhysical.getFixedPhysicalAsset()){
+                                    case 0: assetMap.put("subType", "fixed");break;
+                                    case 1: assetMap.put("subType", "non");break;
+                                }
+                            break;
+                            case 2: assetMap.put("assetType", "Information");
+                                AssetsInformation assetsInformation = assetInformationRepository
+                                        .findById(asset.getAssetId().longValue())
+                                        .orElse(null); // 如果找不到返回 null
+                                switch (assetsInformation.getAssetCategory()){
+                                    case 0: assetMap.put("subType", "database");break;
+                                    case 1: assetMap.put("subType", "doc");break;
+                                    case 2: assetMap.put("subType", "patent");break;
+                                }
+                            break;
                             case 3: assetMap.put("assetType", "People");break;
                         }
                         assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());
