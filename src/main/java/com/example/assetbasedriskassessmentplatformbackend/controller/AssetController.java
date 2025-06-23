@@ -1,7 +1,10 @@
 package com.example.assetbasedriskassessmentplatformbackend.controller;
 
 import com.example.assetbasedriskassessmentplatformbackend.Service.AssetService;
+import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsBasicInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -305,4 +308,20 @@ public class AssetController {
         }
         return assetService.FilterAssetCount_2(assettype,Status,Qstatus);
     }
+//ljy新加
+//     @PostMapping("/saveAsset")
+//     public ResponseEntity<String> saveAsset(@RequestBody AssetsBasicInfo assetInfo) {
+//     try {
+//         // 调用服务层保存资产数据
+//         assetService.saveAsset(assetInfo);
+//         return ResponseEntity.ok("资产保存成功！");
+//     } catch (Exception e) {
+//         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                              .body("保存资产时发生错误: " + e.getMessage());
+//     }
+// }
+
+
+
+
 }
