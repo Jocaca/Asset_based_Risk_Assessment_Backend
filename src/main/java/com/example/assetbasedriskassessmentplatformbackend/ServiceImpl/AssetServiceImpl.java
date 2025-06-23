@@ -2,11 +2,11 @@ package com.example.assetbasedriskassessmentplatformbackend.ServiceImpl;
 
 import com.example.assetbasedriskassessmentplatformbackend.Service.AssetService;
 import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsBasicInfo;
-import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsInformation;
-import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsPhysical;
 import com.example.assetbasedriskassessmentplatformbackend.repository.AssetBasicInfoRepository;
-import com.example.assetbasedriskassessmentplatformbackend.repository.AssetInformationRepository;
-import com.example.assetbasedriskassessmentplatformbackend.repository.AssetPhysicalRepository;
+
+import ch.qos.logback.classic.Logger;
+
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -25,10 +26,6 @@ import java.util.stream.Collectors;
 public class AssetServiceImpl implements AssetService {
     @Autowired
     private AssetBasicInfoRepository assetBasicInfoRepository;
-    @Autowired
-    private AssetInformationRepository assetInformationRepository;
-    @Autowired
-    private AssetPhysicalRepository assetPhysicalRepository;
 
     public ResponseEntity<Map<String, Object>> getAllAssets(int page,int size){
         Map<String, Object> response = new HashMap<>();
@@ -48,28 +45,11 @@ public class AssetServiceImpl implements AssetService {
                         int type =asset.getAssetType();
                         switch (type){
                             case 0: assetMap.put("assetType", "Software");break;
-                            case 1: assetMap.put("assetType", "Physical");
-                                AssetsPhysical assetsPhysical = assetPhysicalRepository
-                                        .findById(asset.getAssetId().longValue())
-                                        .orElse(null); // 如果找不到返回 null
-                                switch (assetsPhysical.getFixedPhysicalAsset()){
-                                    case 0: assetMap.put("subType", "fixed");break;
-                                    case 1: assetMap.put("subType", "non");break;
-                                }
-                            break;
-                            case 2: assetMap.put("assetType", "Information");
-                                AssetsInformation assetsInformation = assetInformationRepository
-                                        .findById(asset.getAssetId().longValue())
-                                        .orElse(null); // 如果找不到返回 null
-                                switch (assetsInformation.getAssetCategory()){
-                                    case 0: assetMap.put("subType", "database");break;
-                                    case 1: assetMap.put("subType", "doc");break;
-                                    case 2: assetMap.put("subType", "patent");break;
-                                }
-                            break;
+                            case 1: assetMap.put("assetType", "Physical");break;
+                            case 2: assetMap.put("assetType", "Information");break;
                             case 3: assetMap.put("assetType", "People");break;
                         }
-                        assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());
+                        // assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());
                         assetMap.put("status", asset.getStatus()==0?"Active":"Decommissioned");
                         assetMap.put("qstatus", asset.getQStatus()==0?"In-progress":"Finished");
 //                        assetMap.put("importance", asset.getImportance());
@@ -124,7 +104,7 @@ public class AssetServiceImpl implements AssetService {
                             case 2: assetMap.put("assetType", "Information"); break;
                             case 3: assetMap.put("assetType", "People"); break;
                         }
-                        assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());
+                        // assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());
                         assetMap.put("status", asset.getStatus() == 0 ? "Active" : "Decommissioned");
                         assetMap.put("qstatus", asset.getQStatus()==0?"In-progress":"Finished");
 
@@ -179,7 +159,7 @@ public class AssetServiceImpl implements AssetService {
                             case 2: assetMap.put("assetType", "Information"); break;
                             case 3: assetMap.put("assetType", "People"); break;
                         }
-                        assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());
+                        // assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());
                         assetMap.put("status", asset.getStatus() == 0 ? "Active" : "Decommissioned");
                         assetMap.put("qstatus", asset.getQStatus()==0?"In-progress":"Finished");
 
@@ -234,7 +214,7 @@ public class AssetServiceImpl implements AssetService {
                             case 2: assetMap.put("assetType", "Information"); break;
                             case 3: assetMap.put("assetType", "People"); break;
                         }
-                        assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());
+                        // assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());
                         assetMap.put("status", asset.getStatus() == 0 ? "Active" : "Decommissioned");
                         assetMap.put("qstatus", asset.getQStatus()==0?"In-progress":"Finished");
 
@@ -324,5 +304,33 @@ public class AssetServiceImpl implements AssetService {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+
+    // ljy新增 saveAsset 方法
+//     @CrossOrigin(origins = "http://localhost:8080")  // 允许来自该地址的跨域请求
+//     @Override
+// public ResponseEntity<Map<String, Object>> saveAsset(AssetsBasicInfo assetInfo) {
+//     // 创建一个 Logger 实例来记录日志
+//     org.slf4j.Logger logger = LoggerFactory.getLogger(AssetServiceImpl.class);
+
+//     try {
+//         // 打印 assetInfo 的内容，检查数据是否正常传递
+//         logger.info("Received asset info: {}", assetInfo);
+
+//         // 如果你希望查看具体的字段，可以单独打印每个字段
+//         // logger.info("Asset Name: {}", assetInfo.getName());
+//         // logger.info("Asset ID: {}", assetInfo.getAssetID());
+//         // logger.info("Asset Type: {}", assetInfo.getAssetType());
+//         // 按照你需要的字段继续打印...
+
+//         // 模拟保存资产数据，这里可以用你实际的保存代码
+//         // assetsBasicInfoRepository.save(assetInfo);
+
+//         return ResponseEntity.ok("资产保存成功！");
+//     } catch (Exception e) {
+//         logger.error("保存资产时发生错误: {}", e.getMessage(), e);
+//         return ResponseEntity.status(500).body("保存资产时发生错误：" + e.getMessage());
+//     }
+// }
 
 }

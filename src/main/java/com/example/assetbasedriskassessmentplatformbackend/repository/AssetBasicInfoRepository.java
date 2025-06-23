@@ -32,10 +32,10 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             @Param("status") Integer status,
             @Param("qstatus") Integer qstatus);
 
-    @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
-            "LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-            "LOWER(a.assetOwner.assetUserName) LIKE LOWER(CONCAT('%', :search, '%'))")
-    long countWithSearch(@Param("search") String search);
+//     @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
+//             "LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+//             "LOWER(a.assetOwner.assetUserName) LIKE LOWER(CONCAT('%', :search, '%'))")
+//     long countWithSearch(@Param("search") String search);
 
     @Query("SELECT a FROM AssetsBasicInfo a " +
             "WHERE (:assetType = -1 OR a.assetType = :assetType) " +

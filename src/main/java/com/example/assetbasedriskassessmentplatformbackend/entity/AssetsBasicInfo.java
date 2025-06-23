@@ -24,7 +24,7 @@ public class AssetsBasicInfo {
 
     @ManyToOne
     @JoinColumn(name = "asset_owner", referencedColumnName = "assetUserId")
-    private User assetOwner;
+    private User assetOwner;//。。。。。
 
     @Column(name = "contact")
     private String contact;
@@ -39,7 +39,7 @@ public class AssetsBasicInfo {
     private Integer status; // 0=Active,1=Decommissioned
 
     @Column(name = "improtance")
-    private Integer importance; // 0=Low,1=Medium,2=High,3=Extremely High
+    private Integer importance; // 0=Low,1=Medium,2=High,3=Extremely High 拼错了
 
     @Column(name = "associated_assets")
     private String associatedAssets;
