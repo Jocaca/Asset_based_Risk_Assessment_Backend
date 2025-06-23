@@ -35,7 +35,7 @@ public class AssetsInformation extends AssetsBasicInfo {
     private Integer fileFormat; // 0=pdf,1=docx,2=cad
 
     @Column(name = "confidentiality_level")
-    private Integer confidentialityLevel; // 0=public, 1=internal, 2=sec
+    private Integer confidentialityLevel; // 0=public, 1=internal, 2=Secret
 
     @Column(name = "registration_number")
     private String registrationNumber;

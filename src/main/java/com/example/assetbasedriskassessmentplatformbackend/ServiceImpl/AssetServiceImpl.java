@@ -49,7 +49,7 @@ public class AssetServiceImpl implements AssetService {
                             case 2: assetMap.put("assetType", "Information");break;
                             case 3: assetMap.put("assetType", "People");break;
                         }
-                        // assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());
+                        assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());
                         assetMap.put("status", asset.getStatus()==0?"Active":"Decommissioned");
                         assetMap.put("qstatus", asset.getQStatus()==0?"In-progress":"Finished");
 //                        assetMap.put("importance", asset.getImportance());

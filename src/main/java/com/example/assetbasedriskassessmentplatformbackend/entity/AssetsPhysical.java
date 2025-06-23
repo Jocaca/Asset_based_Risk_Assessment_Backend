@@ -22,7 +22,7 @@ public class AssetsPhysical extends AssetsBasicInfo {
 
     @Column(name = "Asset_category2")
     private Integer assetCategory2;
-    // 0=Mobile Electronic Devices, 2=Temporary Facilities and Tools,3=Transportation and Logistics Asset,4=Laboratory and Production Consumables,5=Security and Emergency Equipment,6=Other High-Mobility Assets
+    // 0=Mobile Electronic Devices, 1=Removable Storage Media,2=Temporary Facilities and Tools,3=Transportation and Logistics Asset,4=Laboratory and Production Consumables,5=Security and Emergency Equipment,6=Other High-Mobility Assets
 
     @Column(name = "Current_holder")
     private String currentHolder;

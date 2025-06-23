@@ -39,7 +39,7 @@ public class AssetsBasicInfo {
     private Integer status; // 0=Active,1=Decommissioned
 
     @Column(name = "improtance")
-    private Integer importance; // 0=Low,1=Medium,2=High,3=Extremely High 拼错了
+    private Integer importance; // 0=Low,1=Medium,2=High,3=Extremely High
 
     @Column(name = "associated_assets")
     private String associatedAssets;
