@@ -20,10 +20,10 @@ public class AssetsPeople extends AssetsBasicInfo {
     private Date hireDate;
 
     @Column(name = "background_check_status")
-    private Integer backgroundCheckStatus; // 0=Completed, 1=Pending, etc.
+    private Integer backgroundCheckStatus; // 0=Completed, 1=Pending, 2=Failed, 3=Expired, 4=Not Required.
 
     @Column(name = "security_training_status")
-    private Integer securityTrainingStatus; // 0=Completed, 1=Pending, etc.
+    private Integer securityTrainingStatus; // 0=Completed, 1=Pending, 2=Failed, 3=Expired, 4=Not Required.
 
     @Column(name = "NDA_signing_date")
     private Date ndaSigningDate;

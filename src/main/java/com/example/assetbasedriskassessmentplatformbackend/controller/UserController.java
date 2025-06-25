@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/user")
 @CrossOrigin(origins = "*")
 public class UserController {
     @Autowired
@@ -25,5 +25,9 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(@RequestParam String assetUserName,@RequestParam String assetUserEmail, @RequestParam String assetUserPwd) {
         return userService.register(assetUserName,assetUserEmail,assetUserPwd);
+    }
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> search(@RequestParam String query) {
+        return userService.search(query);
     }
 }

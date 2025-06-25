@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -74,5 +71,22 @@ public class UserServiceImpl implements UserService {
             response.put("message", "注册失败");
             return ResponseEntity.internalServerError().body(response);
         }
+    }
+    public ResponseEntity<Map<String, Object>> search(String query){
+        Map<String, Object> response = new HashMap<>();
+        List<User> users = userRepository.findTop5ByInitials(query);
+
+        List<Map<String, Object>> userList = new ArrayList<>();
+        for (User user : users) {
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("id", user.getAssetUserId());
+            userMap.put("name", user.getAssetUserName()); // 假设name存储在username字段
+            userList.add(userMap);
+        }
+
+        response.put("users", userList);
+        response.put("success", true);
+//        response.put("count", userList.size());
+        return ResponseEntity.ok(response);
     }
 }
