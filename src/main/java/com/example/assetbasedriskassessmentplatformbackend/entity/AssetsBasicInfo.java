@@ -24,7 +24,7 @@ public class AssetsBasicInfo {
 
     @ManyToOne
     @JoinColumn(name = "asset_owner", referencedColumnName = "assetUserId")
-    private User assetOwner;//。。。。。
+    private User assetOwner;
 
     @Column(name = "contact")
     private String contact;
