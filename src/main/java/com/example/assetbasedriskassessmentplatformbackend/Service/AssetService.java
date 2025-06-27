@@ -15,6 +15,7 @@ public interface AssetService {
     ResponseEntity<Map<String, Object>> SearchAssetsCount(String search);
     ResponseEntity<Map<String, Object>> FilterAssetCount_2(int assetType, int status, int qstatus);
     ResponseEntity<Map<String, Object>> getFilteredAssets_2(int page,int size, int assetType, int status, int qstatus);
-    //  // ljy新加，用于保存资产
-    // ResponseEntity<Map<String, Object>> saveAsset(AssetsBasicInfo assetInfo);
+    ResponseEntity<Map<String, Object>> FilterAssetCount_3(int assetType, int status, int rtstatus);
+    ResponseEntity<Map<String, Object>> getFilteredAssets_3(int page,int size, int assetType, int status, int rtstatus);
+
 }

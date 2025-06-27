@@ -160,6 +160,63 @@ public class AssetController {
         }
         return assetService.getFilteredAssets_2(page,size,assettype,Status,Qstatus);
     }
+    @GetMapping("/filteredAssets_3")
+    public ResponseEntity<Map<String, Object>> getFilteredAssets_3(@RequestParam(defaultValue = "0") int page,
+                                                                   @RequestParam(defaultValue = "15") int size,
+                                                                   @RequestParam(required = false) String assetType,
+                                                                   @RequestParam(required = false) String status,
+                                                                   @RequestParam(required = false) String rtstatus) {
+        System.out.println("getFilteredAssets_3");
+        int assettype = 0;
+        if (assetType == null) {assettype=-1;}
+        else {
+            switch (assetType) {
+                case "Software":
+                    assettype = 0;
+                    break;
+                case "Physical":
+                    assettype = 1;
+                    break;
+                case "Information":
+                    assettype = 2;
+                    break;
+                case "People":
+                    assettype = 3;
+                    break;
+                default:
+                    assettype = -1;
+            }
+        }
+        int RTstatus = 0;
+        if(rtstatus == null) {RTstatus=-1;}
+        else {
+            switch (rtstatus) {
+                case "Finished":
+                    RTstatus = 1;
+                    break;
+                case "In-progress":
+                    RTstatus = 0;
+                    break;
+                default:
+                    RTstatus = -1;
+            }
+        }
+        int Status = 0;
+        if(status==null) {Status=-1;}
+        else {
+            switch (status) {
+                case "Active":
+                    Status = 0;
+                    break;
+                case "Decommissioned":
+                    Status = 1;
+                    break;
+                default:
+                    Status = -1;
+            }
+        }
+        return assetService.getFilteredAssets_3(page,size,assettype,Status,RTstatus);
+    }
     @GetMapping("/searchAssets")
     public ResponseEntity<Map<String, Object>> getSearchAssets(@RequestParam(defaultValue = "0") int page,
                                                             @RequestParam(defaultValue = "15") int size,
@@ -308,20 +365,61 @@ public class AssetController {
         }
         return assetService.FilterAssetCount_2(assettype,Status,Qstatus);
     }
-//ljy新加
-//     @PostMapping("/saveAsset")
-//     public ResponseEntity<String> saveAsset(@RequestBody AssetsBasicInfo assetInfo) {
-//     try {
-//         // 调用服务层保存资产数据
-//         assetService.saveAsset(assetInfo);
-//         return ResponseEntity.ok("资产保存成功！");
-//     } catch (Exception e) {
-//         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                              .body("保存资产时发生错误: " + e.getMessage());
-//     }
-// }
-
-
-
-
+    @GetMapping("/filter_assets_count_3")
+    public ResponseEntity<Map<String, Object>> FilterAssetCount_3(@RequestParam(defaultValue = "0") int page,
+                                                                   @RequestParam(defaultValue = "15") int size,
+                                                                   @RequestParam(required = false) String assetType,
+                                                                   @RequestParam(required = false) String status,
+                                                                   @RequestParam(required = false) String rtstatus) {
+        System.out.println("getFilteredAssets_3");
+        int assettype = 0;
+        if (assetType == null) {assettype=-1;}
+        else {
+            switch (assetType) {
+                case "Software":
+                    assettype = 0;
+                    break;
+                case "Physical":
+                    assettype = 1;
+                    break;
+                case "Information":
+                    assettype = 2;
+                    break;
+                case "People":
+                    assettype = 3;
+                    break;
+                default:
+                    assettype = -1;
+            }
+        }
+        int RTstatus = 0;
+        if(rtstatus == null) {RTstatus=-1;}
+        else {
+            switch (rtstatus) {
+                case "Finished":
+                    RTstatus = 1;
+                    break;
+                case "In-progress":
+                    RTstatus = 0;
+                    break;
+                default:
+                    RTstatus = -1;
+            }
+        }
+        int Status = 0;
+        if(status==null) {Status=-1;}
+        else {
+            switch (status) {
+                case "Active":
+                    Status = 0;
+                    break;
+                case "Decommissioned":
+                    Status = 1;
+                    break;
+                default:
+                    Status = -1;
+            }
+        }
+        return assetService.FilterAssetCount_3(assettype,Status,RTstatus);
+    }
 }

@@ -31,6 +31,14 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             @Param("assetType") Integer assetType,
             @Param("status") Integer status,
             @Param("qstatus") Integer qstatus);
+    @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
+            "(:assetType = -1 OR a.assetType = :assetType) AND " +
+            "(:status = -1 OR a.status = :status) AND " +
+            "(:rtstatus = -1 OR a.rtStatus = :rtstatus)")
+    long countWithFilters_3(
+            @Param("assetType") Integer assetType,
+            @Param("status") Integer status,
+            @Param("rtstatus") Integer rtstatus);
 
      @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
              "LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
@@ -64,5 +72,14 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             @Param("assetType") Integer assetType,
             @Param("status") Integer status,
             @Param("qstatus") Integer qstatus,
+            Pageable pageable);
+    @Query("SELECT a FROM AssetsBasicInfo a " +
+            "WHERE (:assetType = -1 OR a.assetType = :assetType) " +
+            "AND (:rtstatus = -1 OR a.rtStatus = :rtstatus) " +
+            "AND (:status = -1 OR a.status = :status)")
+    List<AssetsBasicInfo> findFilteredAssets_3(
+            @Param("assetType") Integer assetType,
+            @Param("status") Integer status,
+            @Param("rtstatus") Integer rtstatus,
             Pageable pageable);
 }

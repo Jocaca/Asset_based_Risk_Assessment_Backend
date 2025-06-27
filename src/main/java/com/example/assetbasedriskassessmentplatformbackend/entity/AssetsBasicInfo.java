@@ -56,4 +56,7 @@ public class AssetsBasicInfo {
 //    @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
+
+    @Column(name="RTStatus")
+    private Integer rtStatus; // 0=in_progress, 1=finished
 }
