@@ -62,7 +62,12 @@ public class InventoryServiceImpl implements InventoryService {
     }
     public ResponseEntity<Map<String,Object>> SaveInevntory(Map<String, Object> requestData) {
         try {
-            Integer assetId = Integer.valueOf(requestData.get("id").toString());
+            Integer assetId = null;
+            if (requestData.containsKey("id") && requestData.get("id") != null) {
+                System.out.println(1);
+                assetId = Integer.valueOf(requestData.get("id").toString());
+            }
+            System.out.println("assetId"+assetId);
             Integer newAssetType = (Integer) requestData.get("AssetType");
             Boolean newAsset = true;
 
@@ -150,7 +155,11 @@ public class InventoryServiceImpl implements InventoryService {
     private ResponseEntity<Map<String, Object>> saveSoftwareAsset(Map<String, Object> data,Boolean newAsset) {
         System.out.println("save software");
         AssetsSoftware asset;
-        Integer assetId = Integer.valueOf(data.get("id").toString());
+        Integer assetId = null;
+        if (data.containsKey("id") && data.get("id") != null) {
+            System.out.println(1);
+            assetId = Integer.valueOf(data.get("id").toString());
+        }
         if (assetId != null && assetId > 0 && newAsset) {
             asset = assetSoftwareRepository.findById((long) assetId)
                     .orElseThrow(() -> new RuntimeException("Software asset not found"));
@@ -193,7 +202,11 @@ public class InventoryServiceImpl implements InventoryService {
     }
     private ResponseEntity<Map<String, Object>> savePhysicalAsset(Map<String, Object> data,Boolean newAsset) {
         AssetsPhysical asset;
-        Integer assetId = Integer.valueOf(data.get("id").toString());
+        Integer assetId = null;
+        if (data.containsKey("id") && data.get("id") != null) {
+            System.out.println(1);
+            assetId = Integer.valueOf(data.get("id").toString());
+        }
         if (assetId != null && assetId > 0 &&newAsset) {
             asset = assetPhysicalRepository.findById(assetId.longValue())
                     .orElseThrow(() -> new RuntimeException("Physical asset not found"));
@@ -233,7 +246,11 @@ public class InventoryServiceImpl implements InventoryService {
     }
     private ResponseEntity<Map<String, Object>> saveInformationAsset(Map<String, Object> data ,Boolean newAsset) {
         AssetsInformation asset;
-        Integer assetId = Integer.valueOf(data.get("id").toString());
+        Integer assetId = null;
+        if (data.containsKey("id") && data.get("id") != null) {
+            System.out.println(1);
+            assetId = Integer.valueOf(data.get("id").toString());
+        }
         if (assetId != null && assetId > 0 && newAsset) {
             asset = assetInformationRepository.findById(assetId.longValue())
                     .orElseThrow(() -> new RuntimeException("Information asset not found"));
@@ -275,7 +292,11 @@ public class InventoryServiceImpl implements InventoryService {
     }
     private ResponseEntity<Map<String, Object>> savePeopleAsset(Map<String, Object> data,Boolean newAsset) {
         AssetsPeople asset;
-        Integer assetId = Integer.valueOf(data.get("id").toString());
+        Integer assetId = null;
+        if (data.containsKey("id") && data.get("id") != null) {
+            System.out.println(1);
+            assetId = Integer.valueOf(data.get("id").toString());
+        }
         if (assetId != null && assetId > 0 && newAsset) {
             asset = assetPeopleRepository.findById(assetId.longValue())
                     .orElseThrow(() -> new RuntimeException("People asset not found"));
