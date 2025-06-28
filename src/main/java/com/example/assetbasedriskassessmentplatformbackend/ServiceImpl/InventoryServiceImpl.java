@@ -168,6 +168,7 @@ public class InventoryServiceImpl implements InventoryService {
             asset = new AssetsSoftware();
             asset.setCreatedAt(new Date());
             asset.setQStatus(0);
+            asset.setRtStatus(0);
         }
         System.out.println(asset);
         setBasicFields(asset, data);
@@ -215,6 +216,7 @@ public class InventoryServiceImpl implements InventoryService {
             asset = new AssetsPhysical();
             asset.setCreatedAt(new Date());
             asset.setQStatus(0);
+            asset.setRtStatus(0);
         }
 
         setBasicFields(asset, data);
@@ -259,6 +261,7 @@ public class InventoryServiceImpl implements InventoryService {
             asset = new AssetsInformation();
             asset.setCreatedAt(new Date());
             asset.setQStatus(0);
+            asset.setRtStatus(0);
         }
 
         setBasicFields(asset, data);
@@ -305,6 +308,7 @@ public class InventoryServiceImpl implements InventoryService {
             asset = new AssetsPeople();
             asset.setCreatedAt(new Date());
             asset.setQStatus(0);
+            asset.setRtStatus(0);
         }
 
         setBasicFields(asset, data);
