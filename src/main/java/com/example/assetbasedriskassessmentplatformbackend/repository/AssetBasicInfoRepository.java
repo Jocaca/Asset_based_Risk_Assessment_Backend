@@ -36,7 +36,7 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             "(:assetType = -1 OR a.assetType = :assetType) AND " +
             "(:status = -1 OR a.status = :status) AND " +
             "(:rtstatus = -1 OR a.rtStatus = :rtstatus) AND " +
-            "(a.assetOwner.assetUserId = :userId )")
+            "(:userId = 0 OR a.assetOwner.assetUserId = :userId )")
     long countWithFilters_3(
             @Param("assetType") Integer assetType,
             @Param("status") Integer status,
@@ -55,14 +55,20 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
                            @Param("userId") int userId);
 
     @Query("SELECT a FROM AssetsBasicInfo a WHERE " +
-            "a.assetOwner.assetUserId = :userId ")
+            ":userId = 0 OR a.assetOwner.assetUserId = :userId ")
     Page<AssetsBasicInfo> findbyOnwer(
             @Param("userId") int userId,
             Pageable pageable);
 
     @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
-            "a.assetOwner.assetUserId = :userId")
+            ":userId = 0 OR a.assetOwner.assetUserId = :userId")
     long countWithOwner(@Param("userId") int userId);
+
+    @Query("SELECT COUNT(a) FROM AssetsBasicInfo a " +
+            "JOIN a.risks r " +
+            "WHERE r.riskOwner.assetUserId = :userId " +
+            "AND r.valid = 1")
+    long countWithValidRisksByOwner(@Param("userId") int userId);
 
     @Query("SELECT a FROM AssetsBasicInfo a " +
             "WHERE (:assetType = -1 OR a.assetType = :assetType) " +
@@ -105,11 +111,19 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             "WHERE (:assetType = -1 OR a.assetType = :assetType) " +
             "AND (:rtstatus = -1 OR a.rtStatus = :rtstatus) " +
             "AND (:status = -1 OR a.status = :status)" +
-            "AND (a.assetOwner.assetUserId = :userid)")
+            "AND (:userid = 0 OR a.assetOwner.assetUserId = :userid)")
     List<AssetsBasicInfo> findFilteredAssets_3(
             @Param("assetType") Integer assetType,
             @Param("status") Integer status,
             @Param("rtstatus") Integer rtstatus,
             @Param("userid") int userid,
+            Pageable pageable);
+
+    @Query("SELECT a FROM AssetsBasicInfo a " +
+            "JOIN a.risks r " +
+            "WHERE r.riskOwner.assetUserId = :userId " +
+            "AND r.valid = 1")
+    Page<AssetsBasicInfo> findAssetsWithValidRisksByOwner(
+            @Param("userId") Integer userId,
             Pageable pageable);
 }

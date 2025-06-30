@@ -4,7 +4,9 @@ import lombok.Data;
 //import org.hibernate.annotations.CreationTimestamp;
 //import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "assets_basic_info")
@@ -59,4 +61,7 @@ public class AssetsBasicInfo {
 
     @Column(name="RTStatus")
     private Integer rtStatus; // 0=in_progress, 1=finished
+
+    @OneToMany(mappedBy = "Asset", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RiskRelationship> risks = new ArrayList<>();
 }

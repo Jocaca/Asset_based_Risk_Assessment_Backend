@@ -15,7 +15,7 @@ public class RiskRelationship {
     @Column(name = "rid")
     private Integer RID;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asset", referencedColumnName = "asset_id")
     private AssetsBasicInfo Asset;
 

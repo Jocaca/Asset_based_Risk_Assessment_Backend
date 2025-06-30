@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
             response.put("username", user.getAssetUserName());
             response.put("userId", user.getAssetUserId());
             response.put("useremail", user.getAssetUserEmail());
+            response.put("userLevel", user.getAssetUserLevel());
             return ResponseEntity.ok(response);
         } else {
             response.put("success", false);
