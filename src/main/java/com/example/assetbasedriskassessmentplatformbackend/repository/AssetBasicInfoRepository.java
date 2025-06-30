@@ -31,19 +31,38 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             @Param("assetType") Integer assetType,
             @Param("status") Integer status,
             @Param("qstatus") Integer qstatus);
+
     @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
             "(:assetType = -1 OR a.assetType = :assetType) AND " +
             "(:status = -1 OR a.status = :status) AND " +
-            "(:rtstatus = -1 OR a.rtStatus = :rtstatus)")
+            "(:rtstatus = -1 OR a.rtStatus = :rtstatus) AND " +
+            "(a.assetOwner.assetUserId = :userId )")
     long countWithFilters_3(
             @Param("assetType") Integer assetType,
             @Param("status") Integer status,
-            @Param("rtstatus") Integer rtstatus);
+            @Param("rtstatus") Integer rtstatus,
+            @Param("userId") int userId);
 
      @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
              "LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
              "LOWER(a.assetOwner.assetUserName) LIKE LOWER(CONCAT('%', :search, '%'))")
      long countWithSearch(@Param("search") String search);
+
+    @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
+            "LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) AND " +
+            "(a.assetOwner.assetUserId = :userId)")
+    long countWithSearch_2(@Param("search") String search,
+                           @Param("userId") int userId);
+
+    @Query("SELECT a FROM AssetsBasicInfo a WHERE " +
+            "a.assetOwner.assetUserId = :userId ")
+    Page<AssetsBasicInfo> findbyOnwer(
+            @Param("userId") int userId,
+            Pageable pageable);
+
+    @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
+            "a.assetOwner.assetUserId = :userId")
+    long countWithOwner(@Param("userId") int userId);
 
     @Query("SELECT a FROM AssetsBasicInfo a " +
             "WHERE (:assetType = -1 OR a.assetType = :assetType) " +
@@ -64,6 +83,14 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             @Param("search") String search,
             Pageable pageable);
 
+    @Query("SELECT a FROM AssetsBasicInfo a WHERE " +
+            "LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) AND " +
+            "(a.assetOwner.assetUserId = :userId)")
+    List<AssetsBasicInfo> findSearchAssetsByOwner(
+            @Param("search") String search,
+            @Param("userId") int userId,
+            Pageable pageable);
+
     @Query("SELECT a FROM AssetsBasicInfo a " +
             "WHERE (:assetType = -1 OR a.assetType = :assetType) " +
             "AND (:qstatus = -1 OR a.qStatus = :qstatus) " +
@@ -73,13 +100,16 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             @Param("status") Integer status,
             @Param("qstatus") Integer qstatus,
             Pageable pageable);
+
     @Query("SELECT a FROM AssetsBasicInfo a " +
             "WHERE (:assetType = -1 OR a.assetType = :assetType) " +
             "AND (:rtstatus = -1 OR a.rtStatus = :rtstatus) " +
-            "AND (:status = -1 OR a.status = :status)")
+            "AND (:status = -1 OR a.status = :status)" +
+            "AND (a.assetOwner.assetUserId = :userid)")
     List<AssetsBasicInfo> findFilteredAssets_3(
             @Param("assetType") Integer assetType,
             @Param("status") Integer status,
             @Param("rtstatus") Integer rtstatus,
+            @Param("userid") int userid,
             Pageable pageable);
 }

@@ -25,6 +25,13 @@ public class AssetController {
         System.out.println("getAllAssets");
         return assetService.getAllAssets(page,size);
     }
+    @GetMapping("/getAssetsByOwner")
+    public ResponseEntity<Map<String, Object>> getAssetsByOwner(@RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "15") int size,
+                                                                @RequestParam int userId) {
+        System.out.println("getAssetsByOwner");
+        return assetService.getAssetsByOwner(page,size,userId);
+    }
     @GetMapping("/filteredAssets")
     public ResponseEntity<Map<String, Object>> getFilteredAssets(@RequestParam(defaultValue = "0") int page,
                                                             @RequestParam(defaultValue = "15") int size,
@@ -165,7 +172,8 @@ public class AssetController {
                                                                    @RequestParam(defaultValue = "15") int size,
                                                                    @RequestParam(required = false) String assetType,
                                                                    @RequestParam(required = false) String status,
-                                                                   @RequestParam(required = false) String rtstatus) {
+                                                                   @RequestParam(required = false) String rtstatus,
+                                                                   @RequestParam int userId) {
         System.out.println("getFilteredAssets_3");
         int assettype = 0;
         if (assetType == null) {assettype=-1;}
@@ -215,7 +223,7 @@ public class AssetController {
                     Status = -1;
             }
         }
-        return assetService.getFilteredAssets_3(page,size,assettype,Status,RTstatus);
+        return assetService.getFilteredAssets_3(page,size,assettype,Status,RTstatus,userId);
     }
     @GetMapping("/searchAssets")
     public ResponseEntity<Map<String, Object>> getSearchAssets(@RequestParam(defaultValue = "0") int page,
@@ -224,10 +232,23 @@ public class AssetController {
         System.out.println("getSearchAssets");
         return assetService.getSearchAssets(page,size,searchTerm);
     }
+    @GetMapping("/searchAssetsByOwner")
+    public ResponseEntity<Map<String, Object>> getSearchAssetsByOwner(@RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "15") int size,
+                                                               @RequestParam String searchTerm,
+                                                                      @RequestParam int userId) {
+        System.out.println("getSearchAssets");
+        return assetService.getSearchAssetsByOwner(page,size,searchTerm,userId);
+    }
     @GetMapping("/assets_count")
     public ResponseEntity<Map<String, Object>> assetsCount() {
         System.out.println("assetsCount");
         return assetService.assetsCount();
+    }
+    @GetMapping("/assets_count_by_owner")
+    public ResponseEntity<Map<String, Object>> assetsCountbyOwner(@RequestParam int userId) {
+        System.out.println("assetsCountbyOwner");
+        return assetService.assetsCountbyOwner(userId);
     }
     @GetMapping("/filter_assets_count")
     public ResponseEntity<Map<String, Object>> FilterAssetCount(@RequestParam(required = false) String assetType,  // ✅ 允许为空
@@ -310,6 +331,12 @@ public class AssetController {
         System.out.println("SearchAssetsCount");
         return assetService.SearchAssetsCount(searchTerm);
     }
+    @GetMapping("/search_assets_count_2")
+    public ResponseEntity<Map<String, Object>> SearchAssetsCount_2(@RequestParam String searchTerm,
+                                                                   @RequestParam int userId) {
+        System.out.println("SearchAssetsCount_2");
+        return assetService.SearchAssetsCount_2(searchTerm,userId);
+    }
     @GetMapping("/filter_assets_count_2")
     public ResponseEntity<Map<String, Object>> FilterAssetCount_2(@RequestParam(required = false) String assetType,
                                                                 @RequestParam(required = false) String status,
@@ -370,7 +397,8 @@ public class AssetController {
                                                                    @RequestParam(defaultValue = "15") int size,
                                                                    @RequestParam(required = false) String assetType,
                                                                    @RequestParam(required = false) String status,
-                                                                   @RequestParam(required = false) String rtstatus) {
+                                                                   @RequestParam(required = false) String rtstatus,
+                                                                  @RequestParam int userId) {
         System.out.println("getFilteredAssets_3");
         int assettype = 0;
         if (assetType == null) {assettype=-1;}
@@ -420,6 +448,6 @@ public class AssetController {
                     Status = -1;
             }
         }
-        return assetService.FilterAssetCount_3(assettype,Status,RTstatus);
+        return assetService.FilterAssetCount_3(assettype,Status,RTstatus,userId);
     }
 }
