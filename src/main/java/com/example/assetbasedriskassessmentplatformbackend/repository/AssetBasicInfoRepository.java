@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo, Long>,
         JpaSpecificationExecutor<AssetsBasicInfo> {
@@ -43,10 +44,10 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             @Param("rtstatus") Integer rtstatus,
             @Param("userId") int userId);
 
-     @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
-             "LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-             "LOWER(a.assetOwner.assetUserName) LIKE LOWER(CONCAT('%', :search, '%'))")
-     long countWithSearch(@Param("search") String search);
+    @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
+            "LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(a.assetOwner.assetUserName) LIKE LOWER(CONCAT('%', :search, '%'))")
+    long countWithSearch(@Param("search") String search);
 
     @Query("SELECT COUNT(a) FROM AssetsBasicInfo a WHERE " +
             "LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) AND " +
@@ -172,4 +173,6 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             @Param("userId") Integer userId,
             Pageable pageable);
 
+    @Query("SELECT a FROM AssetsBasicInfo a WHERE a.assetId = :id")
+    Optional<AssetsBasicInfo> findByAssetId(@Param("id") Integer id);
 }
