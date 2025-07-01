@@ -1,6 +1,6 @@
 package com.example.assetbasedriskassessmentplatformbackend.controller;
 
-import com.example.assetbasedriskassessmentplatformbackend.Service.RiskService;
+import com.example.assetbasedriskassessmentplatformbackend.Service.SubRiskManagementService;
 import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsBasicInfo;
 import com.example.assetbasedriskassessmentplatformbackend.entity.RiskType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,23 +14,23 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 public class RiskManagementController {
 
-    private final RiskService riskService;
+    private final SubRiskManagementService subRiskManagementServiceriskService;
 
     @Autowired
-    public RiskManagementController(RiskService riskService) {
-        this.riskService = riskService;
+    public RiskManagementController(SubRiskManagementService subRiskManagementServiceriskService) {
+        this.subRiskManagementServiceriskService = subRiskManagementServiceriskService;
     }
 
     @GetMapping("/count")
     public ResponseEntity<Map<String, Object>> getRiskRelationshipsCount(
             @RequestParam Integer assetId) {
-        return riskService.getRiskRelationshipsCount(assetId);
+        return subRiskManagementServiceriskService.getRiskRelationshipsCount(assetId);
     }
 
     @GetMapping("/risk-types")
     public ResponseEntity<Map<String, Object>> getRiskTypesWithContent(
             @RequestParam Integer assetId) {
-        return riskService.getRiskTypesWithContent(assetId);
+        return subRiskManagementServiceriskService.getRiskTypesWithContent(assetId);
     }
 
     @PostMapping("/save-risk")
@@ -85,7 +85,7 @@ public class RiskManagementController {
 
 //---
 
-            return riskService.saveRiskData(
+            return subRiskManagementServiceriskService.saveRiskData(
                     assetId, typeID, applicable,
                     riskOwnerUsername, comments, dueDateStr,
                     isDone, currentUserId);
@@ -102,13 +102,13 @@ public class RiskManagementController {
     public ResponseEntity<Map<String, Object>> getRiskLogs(
             @RequestParam Integer assetId,
             @RequestParam Integer typeID) {
-        return riskService.getRiskLogs(assetId, typeID);
+        return subRiskManagementServiceriskService.getRiskLogs(assetId, typeID);
     }
 
     @GetMapping("/treatment-details")
     public ResponseEntity<Map<String, Object>> getTreatmentDetails(
             @RequestParam Integer rid) {
-        return riskService.getTreatmentDetails(rid);
+        return subRiskManagementServiceriskService.getTreatmentDetails(rid);
     }
 
     @ExceptionHandler(Exception.class)
