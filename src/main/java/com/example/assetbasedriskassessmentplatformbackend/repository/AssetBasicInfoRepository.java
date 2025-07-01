@@ -54,6 +54,14 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
     long countWithSearch_2(@Param("search") String search,
                            @Param("userId") int userId);
 
+    @Query("SELECT COUNT(a) FROM AssetsBasicInfo a JOIN a.risks r WHERE " +
+            "(LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(a.assetOwner.assetUserName) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
+            "r.riskOwner.assetUserId = :userId AND " +
+            "r.valid = 1")
+    long countWithSearch_3(@Param("search") String search,
+                           @Param("userId") int userId);
+
     @Query("SELECT a FROM AssetsBasicInfo a WHERE " +
             ":userId = 0 OR a.assetOwner.assetUserId = :userId ")
     Page<AssetsBasicInfo> findbyOnwer(
@@ -69,6 +77,33 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             "WHERE r.riskOwner.assetUserId = :userId " +
             "AND r.valid = 1")
     long countWithValidRisksByOwner(@Param("userId") int userId);
+
+    @Query("SELECT COUNT(a) FROM AssetsBasicInfo a " +
+            "JOIN a.risks r WHERE " +
+            "(:assetType = -1 OR a.assetType = :assetType) AND " +
+            "(:status = -1 OR a.status = :status) AND " +
+            "(:treatmentstatus = -1 OR r.treatmentStatus = :treatmentstatus) AND " +
+            "r.riskOwner.assetUserId = :userId AND " +
+            "r.valid = 1")
+    long countWithFilters_4(
+            @Param("assetType") Integer assetType,
+            @Param("status") Integer status,
+            @Param("treatmentstatus") Integer treatmentstatus,
+            @Param("userId") int userId);
+
+    @Query("SELECT a FROM AssetsBasicInfo a " +
+            "JOIN a.risks r WHERE " +
+            "(:assetType = -1 OR a.assetType = :assetType) AND " +
+            "(:status = -1 OR a.status = :status) AND " +
+            "(:treatmentstatus = -1 OR r.treatmentStatus = :treatmentstatus) AND " +
+            "(r.riskOwner.assetUserId = :userid) AND " +
+            "r.valid = 1")
+    List<AssetsBasicInfo> findFilteredAssets_4(
+            @Param("assetType") Integer assetType,
+            @Param("status") Integer status,
+            @Param("treatmentstatus") Integer treatmentstatus,
+            @Param("userid") int userid,
+            Pageable pageable);
 
     @Query("SELECT a FROM AssetsBasicInfo a " +
             "WHERE (:assetType = -1 OR a.assetType = :assetType) " +
@@ -93,6 +128,16 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
             "LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) AND " +
             "(a.assetOwner.assetUserId = :userId)")
     List<AssetsBasicInfo> findSearchAssetsByOwner(
+            @Param("search") String search,
+            @Param("userId") int userId,
+            Pageable pageable);
+
+    @Query("SELECT a FROM AssetsBasicInfo a JOIN a.risks r WHERE " +
+            "(LOWER(a.assetName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(a.assetOwner.assetUserName) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
+            "r.riskOwner.assetUserId = :userId AND " +
+            "r.valid = 1")
+    List<AssetsBasicInfo> findSearchAssetsByOwner_2(
             @Param("search") String search,
             @Param("userId") int userId,
             Pageable pageable);
@@ -126,4 +171,5 @@ public interface AssetBasicInfoRepository extends JpaRepository<AssetsBasicInfo,
     Page<AssetsBasicInfo> findAssetsWithValidRisksByOwner(
             @Param("userId") Integer userId,
             Pageable pageable);
+
 }

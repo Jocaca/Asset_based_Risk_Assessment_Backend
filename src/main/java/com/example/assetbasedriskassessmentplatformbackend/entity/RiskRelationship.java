@@ -37,7 +37,7 @@ public class RiskRelationship {
     private String comments;
 
     @Column(name="treatment_status")
-    private String treatmentStatus; // 0=in_progress, 1=finished
+    private Integer treatmentStatus; // 0=in_progress, 1=finished
 
     @OneToOne(mappedBy = "riskRelationship", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RiskTreatment riskTreatment; // 新增字段，不存储外键
