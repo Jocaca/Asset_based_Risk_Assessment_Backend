@@ -51,6 +51,7 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
     @Override
     public ResponseEntity<Map<String, Object>> getRiskTypesWithContent(Integer assetId) {
         Map<String, Object> response = new HashMap<>();
+        System.out.println(assetId);
         try {
             List<Integer> riskTypeIds = riskRelationshipRepo.findRiskTypeIdsByAsset(assetId);
             List<RiskType> riskTypes = riskTypeRepo.findByTypeIdIn(riskTypeIds);
@@ -102,6 +103,7 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
             User currentUser = userRepo.findById(currentUserId)
                     .orElseThrow(() -> new RuntimeException("User not found"));
             System.out.println("当前的user: " + currentUser);
+            System.out.println(asset.getAssetOwner().getAssetUserId());
 
             if (!currentUser.getAssetUserId().equals(asset.getAssetOwner().getAssetUserId())) {
                 response.put("success", false);
@@ -319,7 +321,7 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
 
 
         //默认当前的treatmentstatus 为0
-        record.setTreatmentStatus("0");
+        record.setTreatmentStatus(0);
         //进入调用的时候 done是true ； save是false
         record.setValid(isFinal ? 2 : 1);
         //首次创建 需要写入createDate
@@ -373,7 +375,7 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
                 if (rr.getValid() == 2 && "0".equals(rr.getTreatmentStatus())) {
                     riskTreatmentRepo.findByRiskRelationshipAndValid(rr, 1)
                             .ifPresent(treatment -> {
-                                rr.setTreatmentStatus("1");
+                                rr.setTreatmentStatus(1);
                                 rr.setCreateDate(new Date());
                                 riskRelationshipRepo.save(rr);
                             });
