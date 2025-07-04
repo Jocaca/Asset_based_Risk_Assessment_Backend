@@ -1,6 +1,8 @@
 package com.example.assetbasedriskassessmentplatformbackend.repository;
 
+import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsBasicInfo;
 import com.example.assetbasedriskassessmentplatformbackend.entity.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -82,4 +84,20 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                 prefixPattern
         );
     }
+    @Query("SELECT COUNT(u) FROM User u WHERE " +
+            "u.assetUserLevel = :permission")
+    long countWithFilters(@Param("permission") Integer permission);
+
+    @Query("SELECT u FROM User u WHERE " +
+            "u.assetUserLevel = :permission")
+    List<User> findByFilter(@Param("permission") Integer permission,
+            Pageable pageable);
+
+    @Query("SELECT COUNT(u) FROM User u WHERE " +
+            "LOWER(u.assetUserName) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    long countWithSearch(@Param("searchTerm") String searchTerm);
+
+    @Query("SELECT u FROM User u WHERE " +
+            "LOWER(u.assetUserName) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    List<User> findBySearch(@Param("searchTerm") String searchTerm,Pageable pageable);
 }
