@@ -33,6 +33,13 @@ public class RiskManagementController {
         return subRiskManagementServiceriskService.getRiskTypesWithContent(assetId);
     }
 
+    @GetMapping("/valid-relationships")
+    public ResponseEntity<Map<String, Object>> getValidRiskRelationships(
+            @RequestParam Integer assetId,
+            @RequestParam Integer typeID) {
+        return subRiskManagementServiceriskService.getValidRiskRelationships(assetId, typeID);
+    }
+
     @PostMapping("/save-risk")
     public ResponseEntity<Map<String, Object>> saveRiskData(
             @RequestBody Map<String, Object> request) {
