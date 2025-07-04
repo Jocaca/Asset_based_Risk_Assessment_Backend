@@ -26,7 +26,7 @@ public class User {
     private String assetUserEmail;
 
     @Column(name = "assetUserLevel", columnDefinition = "TINYINT DEFAULT 3")
-    private Integer assetUserLevel; // 0= admin
+    private Integer assetUserLevel; // 0= admin， 1= auditor， 2=general
 
 //    @CreationTimestamp
     @Column(name = "createdAt", updatable = false)

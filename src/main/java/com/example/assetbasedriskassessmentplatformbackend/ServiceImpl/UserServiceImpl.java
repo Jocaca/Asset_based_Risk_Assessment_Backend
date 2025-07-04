@@ -54,6 +54,7 @@ public class UserServiceImpl implements UserService {
         user.setAssetUserName(assetUserName);
         user.setAssetUserEmail(assetUserEmail);
         user.setAssetUserPwd(assetUserPwd);
+        user.setAssetUserLevel(2);
         System.out.println(user);
 
         if (userRepository.findByAssetUserEmail(assetUserEmail).isPresent()) {

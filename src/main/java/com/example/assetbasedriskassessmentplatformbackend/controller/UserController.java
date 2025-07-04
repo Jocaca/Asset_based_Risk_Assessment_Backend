@@ -30,4 +30,8 @@ public class UserController {
     public ResponseEntity<Map<String, Object>> search(@RequestParam String query) {
         return userService.search(query);
     }
+//    @GetMapping("/getAllUser")
+//    public ResponseEntity<Map<String, Object>> getAllUser() {
+//        return userService.getAllUser();
+//    }
 }

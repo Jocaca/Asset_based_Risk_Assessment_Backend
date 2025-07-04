@@ -432,21 +432,14 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
 
             List<RiskRelationship> validRecords = optionalValidRecord.map(Collections::singletonList).orElse(Collections.emptyList());
             System.out.println("Valid records count: " + validRecords.size());
-
             for (RiskRelationship rr : validRecords) {
-                if (rr.getValid() == 2 && rr.getTreatmentStatus() == 0) {
-                    riskTreatmentRepo.findByRiskRelationshipAndValid(rr, 1)
-                            .ifPresent(treatment -> {
+                if (rr.getTreatmentStatus() == 0 &&rr.getRiskTreatment()!=null && rr.getRiskTreatment().getValid()==1) {
                                 System.out.println("Updating treatment status for: " + rr);
                                 rr.setTreatmentStatus(1);
-                            });
+                                riskRelationshipRepo.save(rr);
                 }
+                response.put("status",rr.getTreatmentStatus()==0?"in-progress":"completed");
             }
-
-            // 打印所有找到的记录
-            validRecords.forEach(record -> System.out.println("Record: " + record));
-
-
             // 2. 获取所有历史记录
             List<RiskRelationship> history = riskRelationshipRepo.findByAssetIdAndRiskTypeAndValidIn(
                     assetId, typeID, List.of(0, 2));
@@ -454,15 +447,24 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
             System.out.println("History records count: " + history.size());
 
             // 3. 转换为前端格式
-            List<Map<String, Object>> logData = history.stream().map(rr -> {
+            List<Map<String, Object>> logData = new ArrayList<>();
+            for(RiskRelationship rr : history){
                 Map<String, Object> logEntry = new HashMap<>();
                 logEntry.put("dateTime", rr.getCreateDate());
-                logEntry.put("action", rr.getTreatmentStatus() == 1  ? "Treated" : "Assigned");
-                logEntry.put("by", rr.getRiskOwner().getAssetUserName());
-                logEntry.put("rid", rr.getRID());
-                return logEntry;
-            }).collect(Collectors.toList());
-
+                logEntry.put("action", "Assigned");
+                logEntry.put("by", rr.getAsset().getAssetOwner().getAssetUserName());
+                logEntry.put("id", rr.getRID());
+                logData.add(logEntry);
+                if(rr.getRiskTreatment()!=null){
+                    Map<String, Object> logtreat = new HashMap<>();
+                    logtreat.put("dateTime", rr.getRiskTreatment().getUpdateDate());
+                    logtreat.put("action", "Treated");
+                    logtreat.put("by", rr.getRiskOwner().getAssetUserName());
+                    logtreat.put("id", rr.getRiskTreatment().getID());
+                    logData.add(logtreat);
+                }
+            }
+            response.put("data",logData);
             response.put("success", true);
             response.put("data", logData);
             return ResponseEntity.ok(response);
@@ -481,12 +483,13 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
         System.out.println("----------- getTreatmentDetails 开始 -------------");
 
         try {
-            RiskRelationship relationship = riskRelationshipRepo.findById(rid)
-                    .orElseThrow(() -> new RuntimeException("Risk relationship not found"));
-
-
-            Optional<RiskTreatment> treatment = riskTreatmentRepo
-                    .findByRiskRelationshipAndValid(relationship, 1);
+//            RiskRelationship relationship = riskRelationshipRepo.findById(rid)
+//                    .orElseThrow(() -> new RuntimeException("Risk relationship not found"));
+//
+//
+//            Optional<RiskTreatment> treatment = riskTreatmentRepo
+//                    .findByRiskRelationshipAndValid(relationship, 1);
+            Optional<RiskTreatment> treatment = riskTreatmentRepo.findById(rid);
 
             if (!treatment.isPresent()) {
                 response.put("success", false);
@@ -497,7 +500,7 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
             RiskTreatment t = treatment.get();
             Map<String, Object> details = new HashMap<>();
             details.put("treatedTime", t.getUpdateDate());
-            details.put("treatedBy", relationship.getRiskOwner().getAssetUserName());
+            details.put("treatedBy", t.getRiskRelationship().getRiskOwner().getAssetUserName());
 
             // Risk level mapping
             String riskLevel = switch (t.getRiskLevel()) {
