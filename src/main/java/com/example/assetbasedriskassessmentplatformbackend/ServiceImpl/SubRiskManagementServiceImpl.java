@@ -51,7 +51,6 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
     @Override
     public ResponseEntity<Map<String, Object>> getRiskTypesWithContent(Integer assetId) {
         Map<String, Object> response = new HashMap<>();
-        System.out.println(assetId);
         try {
             List<Integer> riskTypeIds = riskRelationshipRepo.findRiskTypeIdsByAsset(assetId);
             List<RiskType> riskTypes = riskTypeRepo.findByTypeIdIn(riskTypeIds);
@@ -75,6 +74,54 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
         }
     }
 
+
+    @Override
+    public ResponseEntity<Map<String, Object>> getValidRiskRelationships(Integer assetId, Integer typeID) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // 查询valid=2的有效风险关系
+            Optional<RiskRelationship> validRelationship = riskRelationshipRepo.findByAssetIdAndRiskTypeAndValid(
+                    assetId, typeID, 2);
+
+            Optional<RiskRelationship> draftRelationship = riskRelationshipRepo.findByAssetIdAndRiskTypeAndValid(
+                    assetId, typeID, 1);
+
+            if (!validRelationship.isPresent() && !draftRelationship.isPresent()) {
+                response.put("success", true);
+                response.put("data", Collections.emptyList());
+                return ResponseEntity.ok(response);
+            }
+
+            RiskRelationship relationship = null;
+            if(validRelationship.isPresent()){
+                relationship = validRelationship.get();
+            }
+            if(draftRelationship.isPresent()){
+                relationship = draftRelationship.get();
+            }
+
+            
+            Map<String, Object> relationshipData = new HashMap<>();
+            relationshipData.put("id", relationship.getRID());
+            relationshipData.put("assetId", relationship.getAsset().getAssetId());
+            relationshipData.put("typeID", relationship.getRiskType().getTypeID());
+            relationshipData.put("applicable", relationship.getApplicable());
+            relationshipData.put("riskOwner", relationship.getRiskOwner() != null ?
+                    relationship.getRiskOwner().getAssetUserName() : null);
+            relationshipData.put("comments", relationship.getComments());
+            relationshipData.put("dueDate", relationship.getDueDate());
+            relationshipData.put("status", relationship.getTreatmentStatus() == 1 ? "Treated" : "Assigned");
+            relationshipData.put("createdAt", relationship.getCreateDate());
+
+            response.put("success", true);
+            response.put("data", relationshipData);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Failed to get valid risk relationships: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
 
     @Override
     public ResponseEntity<Map<String, Object>> saveRiskData(
@@ -103,7 +150,6 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
             User currentUser = userRepo.findById(currentUserId)
                     .orElseThrow(() -> new RuntimeException("User not found"));
             System.out.println("当前的user: " + currentUser);
-            System.out.println(asset.getAssetOwner().getAssetUserId());
 
             if (!currentUser.getAssetUserId().equals(asset.getAssetOwner().getAssetUserId())) {
                 response.put("success", false);
@@ -112,10 +158,17 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
                 return ResponseEntity.status(403).body(response);
             }
 
+            User riskOwner;
             // 2. 获取risk owner
-            User riskOwner = userRepo.findByAssetUserName(riskOwnerUsername)
-                    .orElseThrow(() -> new RuntimeException("Risk owner not found"));
-            System.out.println("该风险的Owner（riskOwner）: " + riskOwner);
+            if(applicable == true){
+                riskOwner = userRepo.findByAssetUserName(riskOwnerUsername)
+                        .orElseThrow(() -> new RuntimeException("Risk owner not found"));
+                System.out.println("该风险的Owner（riskOwner）: " + riskOwner);
+            }else{
+                riskOwner = null;
+                System.out.println("用户选择接受该风险。" );
+            }
+
 
             // 3. 获取risk type
             RiskType riskType = riskTypeRepo.findById(typeID)
@@ -154,7 +207,7 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
         // 检查是否有valid=2且treatmentStatus=0的记录
         // 则无法进行记录修改，返回给前端，当前任务正在进行中，暂时无法做出修改
         boolean hasInProgress = existingRecords.stream()
-                .anyMatch(r -> r.getValid() == 2 && "0".equals(r.getTreatmentStatus()));
+                .anyMatch(r -> r.getValid() == 2 && r.getTreatmentStatus() ==0 );
 
         if (hasInProgress) {
             System.out.println("检查得到valid=2且treatmentStatus=0的记录 --- 意味着有效task正在执行中，当前对记录无法做出更改");
@@ -167,7 +220,7 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
         // 当前的所有 risk treatment task 已经完成  可以新增
         // 1. 筛选出所有需要更新的记录
         List<RiskRelationship> recordsToUpdate = existingRecords.stream()
-                .filter(r -> r.getValid() == 2 && "1".equals(r.getTreatmentStatus()))
+                .filter(r -> r.getValid() == 2 && r.getTreatmentStatus() ==1 )
                 .collect(Collectors.toList());
 
         System.out.println("找到 " + recordsToUpdate.size() + " 条需更新的记录");
@@ -234,7 +287,7 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
             // 检查是否有valid=2且treatmentStatus=0的记录
             // 目前生效的task进行中， 不可以修改
             boolean hasInProgress = existingRecords.stream()
-                    .anyMatch(r -> (r.getValid() == 2 || r.getValid() == null)  && ("0".equals(r.getTreatmentStatus()) || r.getTreatmentStatus() == null));
+                    .anyMatch(r -> (r.getValid() == 2 || r.getValid() == null)  && r.getTreatmentStatus()==0 || r.getTreatmentStatus() == null);
 
             if (hasInProgress) {
                 System.out.println("检查得到valid=2且treatmentStatus=0的记录--- 意味着有效task正在执行中，当前对记录无法做出更改");
@@ -248,7 +301,7 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
             // 检查是否有valid=2且treatmentStatus=1的记录
             // 当前的所有 risk treatment task 已经完成  可以新增
             List<RiskRelationship> recordsToUpdate = existingRecords.stream()
-                    .filter(r -> r.getValid() == 2 && "1".equals(r.getTreatmentStatus()))
+                    .filter(r -> r.getValid() == 2 && r.getTreatmentStatus() == 1)
                     .collect(Collectors.toList());
 
             System.out.println("找到 " + recordsToUpdate.size() + " 条需更新的记录");
@@ -344,6 +397,12 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
         //进入调用的时候 done是true ； save是false
         record.setValid(isFinal ? 2 : 1);
 
+        //save 变为Done  ; 更新的date
+        if(isFinal){
+            record.setCreateDate(new Date());
+        }
+
+
         if (dueDateStr != null && !dueDateStr.isEmpty()) {
             try {
                 // 解析 ISO 8601 格式的日期时间字符串
@@ -365,32 +424,40 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
     public ResponseEntity<Map<String, Object>> getRiskLogs(Integer assetId, Integer typeID) {
         Map<String, Object> response = new HashMap<>();
         System.out.println("----------- getRiskLogs 开始 -------------");
+        System.out.println("参数 - assetId: " + assetId + ", typeID: " + typeID);
 
         try {
             // 1. 检查并更新已完成但未标记的记录
-            List<RiskRelationship> validRecords = riskRelationshipRepo.findByAssetIdAndRiskTypeAndValidIn(
-                    assetId, typeID, List.of(2));
+            Optional<RiskRelationship> optionalValidRecord = riskRelationshipRepo.findByAssetIdAndRiskTypeAndValid(assetId, typeID, 2);
+
+            List<RiskRelationship> validRecords = optionalValidRecord.map(Collections::singletonList).orElse(Collections.emptyList());
+            System.out.println("Valid records count: " + validRecords.size());
 
             for (RiskRelationship rr : validRecords) {
-                if (rr.getValid() == 2 && "0".equals(rr.getTreatmentStatus())) {
+                if (rr.getValid() == 2 && rr.getTreatmentStatus() == 0) {
                     riskTreatmentRepo.findByRiskRelationshipAndValid(rr, 1)
                             .ifPresent(treatment -> {
+                                System.out.println("Updating treatment status for: " + rr);
                                 rr.setTreatmentStatus(1);
-                                rr.setCreateDate(new Date());
-                                riskRelationshipRepo.save(rr);
                             });
                 }
             }
+
+            // 打印所有找到的记录
+            validRecords.forEach(record -> System.out.println("Record: " + record));
+
 
             // 2. 获取所有历史记录
             List<RiskRelationship> history = riskRelationshipRepo.findByAssetIdAndRiskTypeAndValidIn(
                     assetId, typeID, List.of(0, 2));
 
+            System.out.println("History records count: " + history.size());
+
             // 3. 转换为前端格式
             List<Map<String, Object>> logData = history.stream().map(rr -> {
                 Map<String, Object> logEntry = new HashMap<>();
                 logEntry.put("dateTime", rr.getCreateDate());
-                logEntry.put("action", "1".equals(rr.getTreatmentStatus()) ? "Treated" : "Assigned");
+                logEntry.put("action", rr.getTreatmentStatus() == 1  ? "Treated" : "Assigned");
                 logEntry.put("by", rr.getRiskOwner().getAssetUserName());
                 logEntry.put("rid", rr.getRID());
                 return logEntry;
@@ -416,6 +483,7 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
         try {
             RiskRelationship relationship = riskRelationshipRepo.findById(rid)
                     .orElseThrow(() -> new RuntimeException("Risk relationship not found"));
+
 
             Optional<RiskTreatment> treatment = riskTreatmentRepo
                     .findByRiskRelationshipAndValid(relationship, 1);
@@ -481,7 +549,7 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
 
         // 2. 检查是否所有记录的 treatment_status 均为 "1"
         boolean allFinished = relationships.stream()
-                .allMatch(r -> "1".equals(r.getTreatmentStatus()));
+                .allMatch(r -> r.getTreatmentStatus() == 1);
 
         // 3. 如果全部完成，则更新 Asset 状态
         if (allFinished) {
