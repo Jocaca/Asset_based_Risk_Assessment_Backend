@@ -14,4 +14,7 @@ public class RiskType {
 
     @Column(name = "content")
     private String Content;
+
+    @Column(name = "warning")
+    private String warning;
 }
