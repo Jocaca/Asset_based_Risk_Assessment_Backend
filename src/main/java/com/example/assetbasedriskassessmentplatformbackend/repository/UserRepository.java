@@ -100,4 +100,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u WHERE " +
             "LOWER(u.assetUserName) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     List<User> findBySearch(@Param("searchTerm") String searchTerm,Pageable pageable);
+
+
 }
