@@ -71,13 +71,13 @@ public class RiskServiceImpl implements RiskService {
                         List<Map<String,Object>> assetRisks = new ArrayList<>();
                         for(RiskRelationship risk:asset.getRisks()){
                             Map<String, Object> assetRisk = new HashMap<>();
-                            if(risk.getRiskOwner().getAssetUserId() == userId && risk.getValid() == 1){
+                            if(risk.getRiskOwner().getAssetUserId() == userId && risk.getValid() == 2) {
                                 assetRisk.put("risk", risk.getRiskType().getContent());
                                 assetRisk.put("due", dateFormat.format(risk.getDueDate()));
-                                assetRisk.put("id",risk.getRID());
-                                assetRisk.put("treatmentStatus", risk.getTreatmentStatus()==0?"In-progress":"Finished");
+                                assetRisk.put("id", risk.getRID());
+                                assetRisk.put("treatmentStatus", risk.getTreatmentStatus() == 0 ? "In-progress" : "Finished");
+                                assetRisks.add(assetRisk);
                             }
-                            assetRisks.add(assetRisk);
                         }
                         assetMap.put("assetRisks", assetRisks);
                         return assetMap;
@@ -135,13 +135,13 @@ public class RiskServiceImpl implements RiskService {
                         List<Map<String,Object>> assetRisks = new ArrayList<>();
                         for(RiskRelationship risk:asset.getRisks()){
                             Map<String, Object> assetRisk = new HashMap<>();
-                            if(risk.getRiskOwner().getAssetUserId() == userid && risk.getValid() == 1){
+                            if(risk.getRiskOwner().getAssetUserId() == userid && risk.getValid() == 2) {
                                 assetRisk.put("risk", risk.getRiskType().getContent());
                                 assetRisk.put("due", dateFormat.format(risk.getDueDate()));
-                                assetRisk.put("id",risk.getRID());
-                                assetRisk.put("treatmentStatus", risk.getTreatmentStatus()==0?"In-progress":"Finished");
+                                assetRisk.put("id", risk.getRID());
+                                assetRisk.put("treatmentStatus", risk.getTreatmentStatus() == 0 ? "In-progress" : "Finished");
+                                assetRisks.add(assetRisk);
                             }
-                            assetRisks.add(assetRisk);
                         }
                         assetMap.put("assetRisks", assetRisks);
                         return assetMap;
@@ -199,13 +199,13 @@ public class RiskServiceImpl implements RiskService {
                         List<Map<String,Object>> assetRisks = new ArrayList<>();
                         for(RiskRelationship risk:asset.getRisks()){
                             Map<String, Object> assetRisk = new HashMap<>();
-                            if(risk.getRiskOwner().getAssetUserId() == userId && risk.getValid() == 1){
+                            if(risk.getRiskOwner().getAssetUserId() == userId && risk.getValid() == 2) {
                                 assetRisk.put("risk", risk.getRiskType().getContent());
                                 assetRisk.put("due", dateFormat.format(risk.getDueDate()));
-                                assetRisk.put("id",risk.getRID());
-                                assetRisk.put("treatmentStatus", risk.getTreatmentStatus()==0?"In-progress":"Finished");
+                                assetRisk.put("id", risk.getRID());
+                                assetRisk.put("treatmentStatus", risk.getTreatmentStatus() == 0 ? "In-progress" : "Finished");
+                                assetRisks.add(assetRisk);
                             }
-                            assetRisks.add(assetRisk);
                         }
                         assetMap.put("assetRisks", assetRisks);
                         return assetMap;

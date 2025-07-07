@@ -65,6 +65,6 @@ public class AssetsBasicInfo {
     @OneToMany(mappedBy = "Asset", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RiskRelationship> risks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "Asset", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EvidenceChain> evidenceChains = new ArrayList<>();
 }

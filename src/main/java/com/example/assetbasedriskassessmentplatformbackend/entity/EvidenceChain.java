@@ -22,7 +22,7 @@ public class EvidenceChain {
     //这里的asset是新的asset，是可以被用户所修改的
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asset", referencedColumnName = "asset_id")
-    private AssetsBasicInfo Asset;
+    private AssetsBasicInfo asset;
 
     @Column(name = "generate_date")
     private Date generateDate;
@@ -30,6 +30,7 @@ public class EvidenceChain {
     //后续没有筛选的需求，直接存username
     @Column(name = "generate_by")
     private String generateBy;
+
 
     //这里开始存储的都是generate的时候asset的历史信息
     @Column(name="asset_name")
