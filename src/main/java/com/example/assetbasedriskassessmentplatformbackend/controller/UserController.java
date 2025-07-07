@@ -30,6 +30,12 @@ public class UserController {
     public ResponseEntity<Map<String, Object>> search(@RequestParam String query) {
         return userService.search(query);
     }
+
+    @GetMapping("/search-auditor")
+    public ResponseEntity<Map<String, Object>> searchAuditor(@RequestParam String query) {
+        return userService.searchAuditor(query);
+    }
+
     @GetMapping("/getAllUsers")
     public ResponseEntity<Map<String, Object>> getAllUsers(@RequestParam(defaultValue = "0") int page,
                                                            @RequestParam(defaultValue = "15") int size) {
@@ -76,4 +82,5 @@ public class UserController {
         System.out.println("delete");
         return userService.deleteUser(userId);
     }
+
 }
