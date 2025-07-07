@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -89,6 +90,7 @@ public class UserServiceImpl implements UserService {
             Map<String, Object> userMap = new HashMap<>();
             userMap.put("id", user.getAssetUserId());
             userMap.put("name", user.getAssetUserName()); // 假设name存储在username字段
+            userMap.put("level",user.getAssetUserLevel());
             userList.add(userMap);
         }
 
@@ -97,6 +99,29 @@ public class UserServiceImpl implements UserService {
 //        response.put("count", userList.size());
         return ResponseEntity.ok(response);
     }
+    public ResponseEntity<Map<String, Object>> searchAuditor(String query){
+        Map<String, Object> response = new HashMap<>();
+        List<User> users = userRepository.findTop5ByInitials(query);
+
+        List<Map<String, Object>> userList = new ArrayList<>();
+        for (User user : users) {
+            if (user.getAssetUserLevel() == 1) { // 关键过滤条件
+                Map<String, Object> userMap = new HashMap<>();
+                userMap.put("id", user.getAssetUserId());
+                userMap.put("name", user.getAssetUserName());
+                userMap.put("level", user.getAssetUserLevel());
+                userList.add(userMap);
+            }
+
+        }
+
+        response.put("users", userList);
+        response.put("success", true);
+//        response.put("count", userList.size());
+        return ResponseEntity.ok(response);
+    }
+
+
     public ResponseEntity<Map<String, Object>> getAllUsers(int page, int size){
         Map<String, Object> response = new HashMap<>();
         try {
