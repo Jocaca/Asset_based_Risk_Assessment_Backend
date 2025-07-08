@@ -389,4 +389,21 @@ public class AuditProjectHomeServiceImpl implements AuditProjectHomeService {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+    public ResponseEntity<Map<String, Object>> recommendProjects(String query){
+        Map<String, Object> response = new HashMap<>();
+        List<AuditProject> auditProjects = auditProjectHomeRepository.findTop10ByInitials(query);
+
+        List<Map<String, Object>> auditProjectList = new ArrayList<>();
+        for (AuditProject auditProject : auditProjects) {
+            Map<String, Object> auditMap = new HashMap<>();
+            auditMap.put("id", auditProject.getId());
+            auditMap.put("name", auditProject.getName()); // 假设name存储在username字段
+            auditProjectList.add(auditMap);
+        }
+
+        response.put("auditProjects", auditProjectList);
+        response.put("success", true);
+        return ResponseEntity.ok(response);
+    }
 }

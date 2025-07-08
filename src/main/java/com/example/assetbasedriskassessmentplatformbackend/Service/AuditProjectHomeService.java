@@ -1,6 +1,7 @@
 package com.example.assetbasedriskassessmentplatformbackend.Service;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -12,4 +13,5 @@ public interface AuditProjectHomeService {
     ResponseEntity<Map<String, Object>> projectsCount(int userLevel, int userId);
     ResponseEntity<Map<String, Object>> filterProjectsCount(int statusCode, int userLevel, int userId);
     ResponseEntity<Map<String, Object>> searchProjectsCount(String searchTerm, int userLevel, int userId);
+    ResponseEntity<Map<String, Object>> recommendProjects(String query);
 }

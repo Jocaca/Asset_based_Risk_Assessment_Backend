@@ -12,19 +12,19 @@ public class Files {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "treatment_id")
+    @JoinColumn(name = "treatment_id",referencedColumnName = "id")
     private RiskTreatment riskTreatment;
 
     @Column(nullable = false)
     private String originalName;  // 原始文件名
-
+//
     @Column(nullable = false)
     private String storedName;    // 存储文件名(避免冲突)
 
     @Column(nullable = false)
     private String filePath;      // 文件存储路径或URL
-
-    @Column(nullable = false)
-    private String fileType;      // MIME类型
+//
+//    @Column(nullable = false)
+//    private String fileType;      // MIME类型
 
 }

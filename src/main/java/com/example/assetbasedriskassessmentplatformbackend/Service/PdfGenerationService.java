@@ -1,7 +1,11 @@
 package com.example.assetbasedriskassessmentplatformbackend.Service;
 
-public interface PdfGenerationService {
-    byte[] generateEvidenceChainPdf(Integer assetId, String generatedBy);
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Map;
+
+public interface PdfGenerationService {
+    ResponseEntity<Map<String, Object>> generateEvidenceChainPdf(Integer assetId, String generatedBy);
 
 }

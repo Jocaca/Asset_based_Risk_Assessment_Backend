@@ -104,4 +104,10 @@ public class AuditProjectHomeController {
             @RequestParam(required = false) Integer userId) {
         return auditProjectHomeService.searchProjectsCount(searchTerm, userLevel, userId);
     }
+
+    @GetMapping("/recommand")
+    public ResponseEntity<Map<String, Object>> recommendProjects(@RequestParam String query) {
+        System.out.println("recommand: query:::::" + query);
+        return auditProjectHomeService.recommendProjects(query);
+    }
 }
