@@ -60,6 +60,7 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
                         Map<String, Object> typeMap = new HashMap<>();
                         typeMap.put("typeId", riskType.getTypeID());
                         typeMap.put("content", riskType.getContent());
+                        typeMap.put("warning", riskType.getWarning());
                         return typeMap;
                     })
                     .collect(Collectors.toList());
