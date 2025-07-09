@@ -30,7 +30,7 @@ public class risktreatmentController {
       @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    // 更新或插入问卷记录
+    // 更新或插入记录
     @PostMapping("/save/{id}")
     public ResponseEntity<String> saverisktreatment(@PathVariable int id, @RequestBody Map<String, Object> formData) {
         
@@ -92,45 +92,28 @@ public class risktreatmentController {
 
         System.out.println("count: " + count);//经检验ok
 
-        if (count > 0) {
-            // 如果 Qid 存在，进行更新
-
-            String updateQuery = "UPDATE risk_treatment SET " +
-                    "risk_level = ?, treatment_option = ?, comments = ?, valid = ? WHERE id = ? ";
-
-            jdbcTemplate.update(updateQuery,risklevel,treatmentoption,comments,valid,id);
-            
-            if(valid==1)
-            {
-                String updateQuery2 = "UPDATE risk_treatment SET " +
-                    "update_date = ? WHERE id = ?";
-                
-                    jdbcTemplate.update(updateQuery2,currentDate,id);
-
-             }
-
-        } else {
-            // 如果 Qid 不存在，进行插入
-            String insertQuery = "INSERT INTO risk_treatment (" +
-                    "id,risk_level,treatment_option,comments,valid) " +
-                    "VALUES (?,?,?,?,?)";
+       
+        // 插入，然后id自己生成
+        String insertQuery = "INSERT INTO risk_treatment (" +
+                    "risk_relationship,risk_level,treatment_option,comments,valid,update_date) " +
+                    "VALUES (?,?,?,?,?,?)";
         
 
-            jdbcTemplate.update(insertQuery,id,risklevel,treatmentoption,comments,valid);
+        jdbcTemplate.update(insertQuery,id,risklevel,treatmentoption,comments,valid,currentDate);
 
-            if(valid==1)
-            {
-                String updateQuery3 = "UPDATE risk_treatment SET " +
-                    "update_date = ?" +
-                    "WHERE id = ?";
+        // if(valid==1)
+        // {
+        //         String updateQuery3 = "UPDATE risk_treatment SET " +
+        //             "update_date = ?" +
+        //             "WHERE id = ?";
                 
-                    jdbcTemplate.update(updateQuery3,currentDate,id);
+        //             jdbcTemplate.update(updateQuery3,currentDate,id);
 
-            }
+        // }
 
           
 
-            }
+   
 
 
          
