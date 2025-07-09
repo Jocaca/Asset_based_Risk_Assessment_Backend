@@ -1,6 +1,7 @@
 package com.example.assetbasedriskassessmentplatformbackend.ServiceImpl;
 
 import com.example.assetbasedriskassessmentplatformbackend.Service.PdfGenerationService;
+import com.example.assetbasedriskassessmentplatformbackend.config.InventoryPdfGenerator;
 import com.example.assetbasedriskassessmentplatformbackend.entity.*;
 import com.example.assetbasedriskassessmentplatformbackend.entity.Files;
 import com.example.assetbasedriskassessmentplatformbackend.repository.AssetBasicInfoRepository;
@@ -32,7 +33,8 @@ public class PdfGenerationServiceImpl implements PdfGenerationService {
     private static final BaseColor LIGHT_YELLOW = new BaseColor(255, 255, 225);
     private static final BaseColor LIGHT_PURPLE = new BaseColor(240, 225, 255);
     private static final BaseColor TAG_GREEN = new BaseColor(50, 205, 50);
-    private static final BaseColor TAG_RED = new BaseColor(220, 20, 60);
+    private static final BaseColor TAG_RED = new BaseColor(255, 64, 64);
+    private static final BaseColor TAG_RED_HEAVY = new BaseColor(205, 51, 51);
     private static final BaseColor TAG_BLUE = new BaseColor(30, 144, 255);
     private static final BaseColor TAG_ORANGE = new BaseColor(255, 165, 0);
     private static final BaseColor TAG_GRAY = new BaseColor(169, 169, 169);
@@ -50,7 +52,7 @@ public class PdfGenerationServiceImpl implements PdfGenerationService {
     private EvidenceChainRepository evidenceChainRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private InventoryPdfGenerator inventoryPdfGenerator;
 
     @Transactional
     public ResponseEntity<Map<String, Object>> generateEvidenceChainPdf(Integer assetId, String generatedBy) {
@@ -171,9 +173,15 @@ public class PdfGenerationServiceImpl implements PdfGenerationService {
         labelCell.setPadding(5);
 
         String linkText = asset.getAssetName();
+        String inventoryPdfUrl ="";
+        try {
+            inventoryPdfUrl = inventoryPdfGenerator.generateInventoryPdf(asset);
+        }catch (Exception e){
+            System.out.println(e);
+        }
         Anchor link = new Anchor(linkText,
                 FontFactory.getFont(FontFactory.HELVETICA, 10, BaseColor.BLUE));
-        link.setReference("http://localhost:8080/NewAsset?id="+asset.getAssetId()+"&assetType="+getAssetTypeName(asset.getAssetType()));
+        link.setReference("http://localhost:8081/pdf-storage/inventory/"+inventoryPdfUrl);
 
         PdfPCell valueCell = new PdfPCell();
         valueCell.setBorder(Rectangle.NO_BORDER);
@@ -524,7 +532,7 @@ public class PdfGenerationServiceImpl implements PdfGenerationService {
         Chunk tag = new Chunk(value,
                 FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.WHITE));
         tag.setBackground(getStatusColor(value), 5, 2, 5, 2);
-        tag.setLineHeight(20);
+        tag.setLineHeight(15);
 
         valueCell.addElement(new Phrase(tag));
 
@@ -536,18 +544,19 @@ public class PdfGenerationServiceImpl implements PdfGenerationService {
         switch (status.toLowerCase()) {
             case "active":
             case "finished":
-            case "high":
+            case "low":
+                return TAG_GREEN;
+            case "very low":
+                return new BaseColor(202, 255, 112);
             case "very high":
             case "extremely high":
-                return TAG_GREEN;
-            case "decommissioned":
-            case "low":
-            case "very low":
+                return TAG_RED_HEAVY;
+            case "high":
                 return TAG_RED;
             case "in-progress":
-                return TAG_BLUE;
             case "medium":
                 return TAG_ORANGE;
+            case "decommissioned":
             default:
                 return TAG_GRAY;
         }

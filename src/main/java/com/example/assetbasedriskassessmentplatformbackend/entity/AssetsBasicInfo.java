@@ -1,4 +1,5 @@
 package com.example.assetbasedriskassessmentplatformbackend.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 //import org.hibernate.annotations.CreationTimestamp;
@@ -63,8 +64,10 @@ public class AssetsBasicInfo {
     private Integer rtStatus; // 0=in_progress, 1=finished
 
     @OneToMany(mappedBy = "Asset", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<RiskRelationship> risks = new ArrayList<>();
 
     @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<EvidenceChain> evidenceChains = new ArrayList<>();
 }
