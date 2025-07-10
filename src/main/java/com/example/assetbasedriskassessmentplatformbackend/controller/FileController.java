@@ -23,7 +23,7 @@ public class FileController {
     private JdbcTemplate jdbcTemplate;
 
     // 设置文件存储路径
-    private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/uploads";  // 当前项目目录下
+    private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/static/evidence";  // 当前项目目录下
 
     // 上传文件处理方法
     @PostMapping("/upload/{rid}")
