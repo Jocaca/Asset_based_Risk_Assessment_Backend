@@ -80,5 +80,30 @@ public class getEvidencechain {
     //         return ResponseEntity.status(500).body("Error occurred while clearing the audit_project field");
     //     }
     // }
+
+
+     // 更新操作：修改 status 字段为 1
+    @PatchMapping("/api/changeprojectstatus/{auditid}")
+    public ResponseEntity<String> changeProjectStatus(@PathVariable Long auditid) {
+        String sql = "UPDATE audit_project SET status = 1 WHERE id = ?";
+
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, auditid);
+            if (rowsAffected > 0) {
+                return ResponseEntity.ok("Audit project status updated successfully.");
+            } else {
+                return ResponseEntity.status(404).body("Audit project with ID " + auditid + " not found.");
+            }
+        } catch (Exception e) {
+            // 处理异常
+            System.err.println("Error updating status for audit project with ID " + auditid + ": " + e.getMessage());
+            return ResponseEntity.status(500).body("Error occurred while updating the project status.");
+        }
+    }
+
+
+
+
+
     
 }
