@@ -2,6 +2,7 @@ package com.example.assetbasedriskassessmentplatformbackend.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,5 +36,49 @@ public class getEvidencechain {
         }
         //return List.of() ;
     }
+
+      // 删除操作
+      //只能全部删除 因为auditid不能为空
+    @DeleteMapping("/api/remove/{id}")
+    public ResponseEntity<String> removeEvidenceChain(@PathVariable Long id) {
+
+        System.out.println("Received auditid: " + id);
+        // SQL 删除语句，删除指定 ID 的记录
+        String sql = "DELETE FROM evidence_chain WHERE id = ?";
+
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, id);
+            if (rowsAffected > 0) {
+                return ResponseEntity.ok("Successfully deleted the evidence chain");
+            } else {
+                return ResponseEntity.status(404).body("Evidence chain with ID " + id + " not found");
+            }
+        } catch (Exception e) {
+            // 处理异常
+            System.err.println("Error removing evidence chain for ID " + id + ": " + e.getMessage());
+            return ResponseEntity.status(500).body("Error occurred while deleting the evidence chain");
+        }
+    }
+
+    //  // 更新操作：只清空对应 ID 行的 audit_project 字段
+    // @PatchMapping("/api/remove/{id}")
+    // public ResponseEntity<String> removeAuditProject(@PathVariable Long id) {
+    //     // SQL 更新语句，清空 audit_project 字段
+    //     String sql = "UPDATE evidence_chain SET audit_project = NULL WHERE id = ?";
+    //     System.out.println("Received id: " + id);
+
+    //     try {
+    //         int rowsAffected = jdbcTemplate.update(sql, id);
+    //         if (rowsAffected > 0) {
+    //             return ResponseEntity.ok("Successfully cleared the audit_project field");
+    //         } else {
+    //             return ResponseEntity.status(404).body("Evidence chain with ID " + id + " not found");
+    //         }
+    //     } catch (Exception e) {
+    //         // 处理异常
+    //         System.err.println("Error clearing audit_project for ID " + id + ": " + e.getMessage());
+    //         return ResponseEntity.status(500).body("Error occurred while clearing the audit_project field");
+    //     }
+    // }
     
 }
