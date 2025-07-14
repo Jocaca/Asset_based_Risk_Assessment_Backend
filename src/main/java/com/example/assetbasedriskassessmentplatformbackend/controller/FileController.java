@@ -12,6 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.List;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/file")
@@ -62,6 +65,22 @@ public class FileController {
         } catch (IOException e) {
             e.printStackTrace();
             return "Error uploading file: " + e.getMessage();  // 返回详细错误信息
+        }
+    }
+
+
+
+     // 获取与传入的 rid 匹配的所有文件
+    @GetMapping("/find/{rid}")
+    public List<Map<String, Object>> getFilesByTreatmentId(@PathVariable int rid) {
+        // 查询 files 表，获取所有 treatment_id 匹配传入 rid 的文件记录
+        String query = "SELECT * FROM files WHERE treatment_id = ?";
+        try {
+            List<Map<String, Object>> files = jdbcTemplate.queryForList(query, rid);
+            return files;  // 如果没有找到记录，返回空列表
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null; // 或者返回空的列表，具体取决于需求
         }
     }
     

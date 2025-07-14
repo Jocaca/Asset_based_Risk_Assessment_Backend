@@ -95,11 +95,11 @@ public class risktreatmentController {
        
         // 插入，然后id自己生成
         String insertQuery = "INSERT INTO risk_treatment (" +
-                    "risk_relationship,risk_level,treatment_option,comments,valid,update_date) " +
-                    "VALUES (?,?,?,?,?,?)";
+                    "risk_relationship,risk_level,treatment_option,comments,valid,update_date,id) " +
+                    "VALUES (?,?,?,?,?,?,?)";
         
 
-        jdbcTemplate.update(insertQuery,id,risklevel,treatmentoption,comments,valid,currentDate);
+        jdbcTemplate.update(insertQuery,id,risklevel,treatmentoption,comments,valid,currentDate,id);
 
         // if(valid==1)
         // {
