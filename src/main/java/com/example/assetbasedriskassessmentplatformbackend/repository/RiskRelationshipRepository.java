@@ -36,6 +36,12 @@ public interface RiskRelationshipRepository extends JpaRepository<RiskRelationsh
             @Param("typeId") Integer typeID,
             @Param("valid") Integer valid);
 
+    @Query("SELECT r FROM RiskRelationship r WHERE r.Asset.assetId = :assetId AND r.riskType.typeID IN :typeIds AND r.valid = :valid")
+    List<RiskRelationship> findByAssetIdAndRiskTypeInAndValid(
+            @Param("assetId") Integer assetId,
+            @Param("typeIds") List<Integer> typeIds,
+            @Param("valid") Integer valid);
+
     @Query("SELECT r FROM RiskRelationship r WHERE r.Asset.assetId = :assetId AND r.riskType.typeID = :typeId AND r.valid IN :validStatuses ORDER BY r.createDate DESC")
     List<RiskRelationship> findByAssetIdAndRiskTypeAndValidIn(
             @Param("assetId") Integer assetId,

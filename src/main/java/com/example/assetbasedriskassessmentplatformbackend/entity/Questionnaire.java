@@ -5,20 +5,19 @@ import lombok.Data;
 //import org.hibernate.annotations.CreationTimestamp;
 //import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-
 
 @Entity
 @Data
-@Table(name = "assets_questionaire")
-public class assets_questionaire {
-
+@Table(name = "Questionnaire")
+public class Questionnaire {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+
+    @OneToOne
+    @JoinColumn(name = "asset", referencedColumnName = "asset_id") // 仍然使用现有的外键列
+    private AssetsBasicInfo asset;
 
     @Column(name = "Q1")
     private String Q1;
@@ -94,12 +93,4 @@ public class assets_questionaire {
 
     @Column(name = "Q25")
     private String Q25;
-
-    @Column(name = "risks")
-    private String risks;
-
-    @Column(name = "warning")
-    private String warning;
-
-    // Getters and Setters
 }

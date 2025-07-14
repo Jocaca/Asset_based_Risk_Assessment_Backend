@@ -70,4 +70,8 @@ public class AssetsBasicInfo {
     @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<EvidenceChain> evidenceChains = new ArrayList<>();
+
+    @OneToOne(mappedBy = "asset", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Questionnaire questionnaire; // 新增字段，不存储外键
 }

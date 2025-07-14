@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 
@@ -27,9 +28,14 @@ public class InventoryServiceImpl implements InventoryService {
     AssetPeopleRepository assetPeopleRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    QuestionnaireRepository questionnaireRepository;
+    @Autowired
+    RiskRelationshipRepository riskRelationshipRepository;
 
     public ResponseEntity<Map<String, Object>> getAssetInfo (int id, String type){
         Object asset;
+        System.out.println(id);
         System.out.println(type);
         switch (type) {
             case "Software":
@@ -145,6 +151,18 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     private void deleteFromOldTable(Integer assetId, Integer oldType) {
+//        清空questionnaire
+        AssetsBasicInfo assetsBasicInfo = assetBasicInfoRepository.findByAssetId(assetId).get();
+//        把所有risk valid设置为0
+        List<RiskRelationship> riskRelationships = riskRelationshipRepository.findByAssetIdAndValid(assetId,2);
+        for (RiskRelationship riskRelationship : riskRelationships) {
+            riskRelationship.setValid(0);
+            riskRelationshipRepository.save(riskRelationship);
+        }
+//        删除所有暂存记录
+        riskRelationshipRepository.deleteAll(riskRelationshipRepository.findByAssetIdAndValid(assetId,1));
+
+        questionnaireRepository.delete(assetsBasicInfo.getQuestionnaire());
         switch (oldType) {
             case 0: assetSoftwareRepository.deleteById(assetId.longValue()); break;
             case 1: assetPhysicalRepository.deleteById(assetId.longValue()); break;
