@@ -31,7 +31,6 @@ public class EvidenceChain {
     @Column(name = "generate_by")
     private String generateBy;
 
-
     //这里开始存储的都是generate的时候asset的历史信息
     @Column(name="asset_name")
     private String assetName;

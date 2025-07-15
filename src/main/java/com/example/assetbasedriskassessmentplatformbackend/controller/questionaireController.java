@@ -44,6 +44,10 @@ public class questionaireController {
         switch (type) {
             case "Software":
                 return questionnaireService.loadSoftware(id);
+            case "Physical":
+                return questionnaireService.loadPhysical(id);
+            case "Physical_non":
+                return questionnaireService.loadPhysicalNon(id);
             case "People":
                 return questionnaireService.loadPeople(id);
             default:
@@ -66,6 +70,10 @@ public class questionaireController {
         switch (type) {
             case "Software":
                 return questionnaireService.submitSoftware(id,status,answer);
+            case "Physical":
+                return questionnaireService.submitPhysical(id,status,answer);
+            case "Physical_non":
+                return questionnaireService.submitPhysicalNon(id,status,answer);
             case "People":
                 return questionnaireService.submitPeople(id,status,answer);
             default:

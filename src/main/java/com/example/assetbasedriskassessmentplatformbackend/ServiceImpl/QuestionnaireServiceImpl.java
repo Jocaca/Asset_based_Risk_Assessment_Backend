@@ -21,6 +21,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     private AssetSoftwareRepository assetSoftwareRepository;
 
     @Autowired
+    private AssetPhysicalRepository assetPhysicalRepository;
+
+    @Autowired
     private AssetPeopleRepository assetPeopleRepository;
 
     @Autowired
@@ -66,6 +69,54 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
             map.put("Q13_7Status",questionnaire.getQ23());
             map.put("Q14Status",questionnaire.getQ24());
             map.put("Q15Status",questionnaire.getQ25());
+            response.put("isload", true);
+            response.put("success", true);
+            response.put("status",map);
+        }
+        return ResponseEntity.ok(response);
+    }
+    public ResponseEntity<Map<String, Object>> loadPhysical(int id) {
+        Map<String, Object> response = new HashMap<>();
+        AssetsPhysical asset = assetPhysicalRepository.findById((long)id).get();
+        if(asset.getQuestionnaire() == null) {
+            response.put("isload", false);
+            response.put("success", true);
+        } else {
+            Questionnaire questionnaire = asset.getQuestionnaire();
+            Map<String,Object> map = new HashMap<>();
+            map.put("Q1Status",questionnaire.getQ1());
+            map.put("Q1_1Status",questionnaire.getQ2());
+            map.put("Q2Status",questionnaire.getQ3());
+            map.put("Q2_1Status",questionnaire.getQ4());
+            map.put("Q3Status",questionnaire.getQ5());
+            map.put("Q3_1Status",questionnaire.getQ6());
+            map.put("Q4Status",questionnaire.getQ7());
+            map.put("Q5Status",questionnaire.getQ8());
+            map.put("Q5_1Status",questionnaire.getQ9());
+            response.put("isload", true);
+            response.put("success", true);
+            response.put("status",map);
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<Map<String, Object>> loadPhysicalNon(int id) {
+        Map<String, Object> response = new HashMap<>();
+        AssetsPhysical asset = assetPhysicalRepository.findById((long)id).get();
+        if(asset.getQuestionnaire() == null) {
+            response.put("isload", false);
+            response.put("success", true);
+        } else {
+            Questionnaire questionnaire = asset.getQuestionnaire();
+            Map<String,Object> map = new HashMap<>();
+            map.put("Q1Status",questionnaire.getQ1());
+            map.put("Q1_1Status",questionnaire.getQ2());
+            map.put("Q2Status",questionnaire.getQ3());
+            map.put("Q2_1Status",questionnaire.getQ4());
+            map.put("Q3Status",questionnaire.getQ5());
+            map.put("Q3_1Status",questionnaire.getQ6());
+            map.put("Q4Status",questionnaire.getQ7());
+            map.put("Q4_1Status",questionnaire.getQ8());
             response.put("isload", true);
             response.put("success", true);
             response.put("status",map);
@@ -135,7 +186,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
             for (Integer type : riskTypes) {
                 count++;
                 RiskRelationship rr = new RiskRelationship();
-                rr.setValid(2);
+                rr.setValid(1);
                 rr.setRiskType(riskTypeRepository.getReferenceById(type));
                 rr.setAsset(asset);
                 riskRelationshipRepository.save(rr);
@@ -267,6 +318,110 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
             response.put("risk",count);
         }
         response.put("success",true);
+        return ResponseEntity.ok(response);
+    }
+    public ResponseEntity<Map<String, Object>> submitPhysical(Integer id, Integer status, Map<String,Object> answer) {
+        Map<String, Object> response = new HashMap<>();
+
+        AssetsPhysical asset = assetPhysicalRepository.findById((long)id).get();
+        Questionnaire questionnaire;
+        if(asset.getQuestionnaire() == null) {
+            questionnaire = new Questionnaire();
+        } else {
+            questionnaire = asset.getQuestionnaire();
+        }
+
+        questionnaire.setQ1(answer.get("Q1Status").toString());
+        questionnaire.setQ2(answer.get("Q1_1Status").toString());
+        questionnaire.setQ3(answer.get("Q2Status").toString());
+        questionnaire.setQ4(answer.get("Q2_1Status").toString());
+        questionnaire.setQ5(answer.get("Q3Status").toString());
+        questionnaire.setQ6(answer.get("Q3_1Status").toString());
+        questionnaire.setQ7(answer.get("Q4Status").toString());
+        questionnaire.setQ8(answer.get("Q5Status").toString());
+        questionnaire.setQ9(answer.get("Q5_1Status").toString());
+        questionnaire.setAsset(asset);
+        asset.setQStatus(status);
+        asset.setQuestionnaire(questionnaire);
+
+        questionnaireRepository.save(questionnaire);
+        assetPhysicalRepository.save(asset);
+
+        if(status == 1) {
+            int count = 0;
+            // Q1 - Asset documentation
+            count += handleQuestion(questionnaire.getQ1(), "Yes", List.of(65, 66, 67), id, asset);
+            // Q1.1 - Missing key info
+            count += handleQuestion(questionnaire.getQ2(), "Yes", List.of(68, 69), id, asset);
+            // Q2 - Maintenance
+            count += handleQuestion(questionnaire.getQ3(), "Yes", List.of(70,71), id, asset);
+            // Q2.1 - Maintenance reasons
+            count += handleQuestion(questionnaire.getQ4(), "Insufficient resources", List.of(72, 73), id, asset);
+            // Q3 - Software license
+            count += handleQuestion(questionnaire.getQ5(), "Yes", List.of(74, 75), id, asset);
+            // Q3.1 - Corrective action
+            count += handleQuestion(questionnaire.getQ6(), "Yes", List.of(76), id, asset);
+            // Q4 - Risk level
+            count += handleQuestion(questionnaire.getQ7(), "Yes", List.of(77), id, asset);
+            // Q5 - Storage security
+            count += handleQuestion(questionnaire.getQ8(), "Yes", List.of(78, 79), id, asset);
+            // Q5.1 - Sensitive data
+            count += handleQuestion(questionnaire.getQ9(), "Yes", List.of(80, 81), id, asset);
+
+            response.put("risk", count);
+        }
+        response.put("success", true);
+        return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<Map<String, Object>> submitPhysicalNon(Integer id, Integer status, Map<String,Object> answer) {
+        Map<String, Object> response = new HashMap<>();
+
+        AssetsPhysical asset = assetPhysicalRepository.findById((long)id).get();
+        Questionnaire questionnaire;
+        if(asset.getQuestionnaire() == null) {
+            questionnaire = new Questionnaire();
+        } else {
+            questionnaire = asset.getQuestionnaire();
+        }
+
+        questionnaire.setQ1(answer.get("Q1Status").toString());
+        questionnaire.setQ2(answer.get("Q1_1Status").toString());
+        questionnaire.setQ3(answer.get("Q2Status").toString());
+        questionnaire.setQ4(answer.get("Q2_1Status").toString());
+        questionnaire.setQ5(answer.get("Q3Status").toString());
+        questionnaire.setQ6(answer.get("Q3_1Status").toString());
+        questionnaire.setQ7(answer.get("Q4Status").toString());
+        questionnaire.setQ8(answer.get("Q4_1Status").toString());
+        questionnaire.setAsset(asset);
+        asset.setQStatus(status);
+        asset.setQuestionnaire(questionnaire);
+
+        questionnaireRepository.save(questionnaire);
+        assetPhysicalRepository.save(asset);
+
+        if(status == 1) {
+            int count = 0;
+            // Q1 - Data encryption
+            count += handleQuestion(questionnaire.getQ1(), "Yes", List.of(82), id, asset);
+            // Q1.1 - Sensitive data
+            count += handleQuestion(questionnaire.getQ2(), "Yes", List.of(83), id, asset);
+            // Q2 - Remote wipe
+            count += handleQuestion(questionnaire.getQ3(), "Yes", List.of(84), id, asset);
+            // Q2.1 - Easy to lose
+            count += handleQuestion(questionnaire.getQ4(), "Yes", List.of(85), id, asset);
+            // Q3 - Holder info
+            count += handleQuestion(questionnaire.getQ5(), "Yes", List.of(86), id, asset);
+            // Q3.1 - Overdue
+            count += handleQuestion(questionnaire.getQ6(), "Yes", List.of(87), id, asset);
+            // Q4 - Physical condition
+            count += handleQuestion(questionnaire.getQ7(), "Yes", List.of(88), id, asset);
+            // Q4.1 - Functionality impact
+            count += handleQuestion(questionnaire.getQ8(), "Yes", List.of(89), id, asset);
+
+            response.put("risk", count);
+        }
+        response.put("success", true);
         return ResponseEntity.ok(response);
     }
     public ResponseEntity<Map<String, Object>> submitPeople(Integer id, Integer status, Map<String,Object> answer) {

@@ -13,7 +13,7 @@ import java.util.Date;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "assetUserId")
+    @Column(name = "assetUserId",nullable = false)
     private Integer assetUserId;
 
     @Column(name = "assetUserName", nullable = false, unique = true)
@@ -25,11 +25,11 @@ public class User {
     @Column(name = "assetUserEmail", unique = true)
     private String assetUserEmail;
 
-    @Column(name = "assetUserLevel", columnDefinition = "TINYINT DEFAULT 3")
+    @Column(name = "assetUserLevel", columnDefinition = "TINYINT DEFAULT 3",nullable = false)
     private Integer assetUserLevel; // 0= admin， 1= auditor， 2=general
 
 //    @CreationTimestamp
-    @Column(name = "createdAt", updatable = false)
+    @Column(name = "createdAt", updatable = false,nullable = false)
     private Date createdAt;
 
 //    @UpdateTimestamp
