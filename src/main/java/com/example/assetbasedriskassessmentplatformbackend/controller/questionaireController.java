@@ -48,6 +48,12 @@ public class questionaireController {
                 return questionnaireService.loadPhysical(id);
             case "Physical_non":
                 return questionnaireService.loadPhysicalNon(id);
+            case "Database":
+                return questionnaireService.loadDatabase(id);
+            case "Document":
+                return questionnaireService.loadDocument(id);
+            case "Patent":
+                return questionnaireService.loadPatent(id);
             case "People":
                 return questionnaireService.loadPeople(id);
             default:
@@ -74,6 +80,12 @@ public class questionaireController {
                 return questionnaireService.submitPhysical(id,status,answer);
             case "Physical_non":
                 return questionnaireService.submitPhysicalNon(id,status,answer);
+            case "Database":
+                return questionnaireService.submitDatabase(id,status,answer);
+            case "Document":
+                return questionnaireService.submitDocument(id,status,answer);
+            case "Patent":
+                return questionnaireService.submitPatent(id,status,answer);
             case "People":
                 return questionnaireService.submitPeople(id,status,answer);
             default:

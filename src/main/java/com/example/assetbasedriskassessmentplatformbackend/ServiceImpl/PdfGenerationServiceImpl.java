@@ -2,6 +2,7 @@ package com.example.assetbasedriskassessmentplatformbackend.ServiceImpl;
 
 import com.example.assetbasedriskassessmentplatformbackend.Service.PdfGenerationService;
 import com.example.assetbasedriskassessmentplatformbackend.config.InventoryPdfGenerator;
+import com.example.assetbasedriskassessmentplatformbackend.config.QuestionnairePdfGenerator;
 import com.example.assetbasedriskassessmentplatformbackend.entity.*;
 import com.example.assetbasedriskassessmentplatformbackend.entity.Files;
 import com.example.assetbasedriskassessmentplatformbackend.repository.AssetBasicInfoRepository;
@@ -53,6 +54,9 @@ public class PdfGenerationServiceImpl implements PdfGenerationService {
 
     @Autowired
     private InventoryPdfGenerator inventoryPdfGenerator;
+
+    @Autowired
+    private QuestionnairePdfGenerator questionnairePdfGenerator;
 
     @Transactional
     public ResponseEntity<Map<String, Object>> generateEvidenceChainPdf(Integer assetId, String generatedBy) {
@@ -228,9 +232,15 @@ public class PdfGenerationServiceImpl implements PdfGenerationService {
         labelCell.setPadding(5);
 
         String linkText = asset.getAssetName();
+        String QuestionnairePdfUrl ="";
+        try {
+            QuestionnairePdfUrl = questionnairePdfGenerator.generateQuestionnairePdf(asset.getQuestionnaire());
+        }catch (Exception e){
+            System.out.println(e);
+        }
         Anchor link = new Anchor(linkText,
                 FontFactory.getFont(FontFactory.HELVETICA, 10, BaseColor.BLUE));
-        link.setReference("/questionnaire/" + asset.getAssetId());
+        link.setReference("http://localhost:8081/pdf-storage/questionnaires/"+QuestionnairePdfUrl);
 
         PdfPCell valueCell = new PdfPCell();
         valueCell.setBorder(Rectangle.NO_BORDER);

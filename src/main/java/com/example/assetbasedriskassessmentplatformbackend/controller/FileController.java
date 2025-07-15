@@ -46,6 +46,7 @@ public class FileController {
             System.out.println("storedFileName: " + storedFileName);//经检验ok
             Path filePath = Paths.get(UPLOAD_DIR, storedFileName);
 
+
             // 创建目录，如果不存在
             Files.createDirectories(filePath.getParent());
             

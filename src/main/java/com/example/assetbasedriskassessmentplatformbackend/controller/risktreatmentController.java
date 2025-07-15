@@ -36,6 +36,7 @@ public class risktreatmentController {
         
           
             System.out.println("Received asset data: " + formData);//经检验ok
+        System.out.println(id);
 
             String risklevelStr = (String) formData.get("RiskLevel");
 

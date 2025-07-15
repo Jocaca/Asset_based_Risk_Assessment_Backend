@@ -2,6 +2,8 @@ package com.example.assetbasedriskassessmentplatformbackend.ServiceImpl;
 
 import com.example.assetbasedriskassessmentplatformbackend.Service.AssetService;
 import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsBasicInfo;
+import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsInformation;
+import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsPhysical;
 import com.example.assetbasedriskassessmentplatformbackend.repository.AssetBasicInfoRepository;
 
 import ch.qos.logback.classic.Logger;
@@ -46,8 +48,14 @@ public class AssetServiceImpl implements AssetService {
                         int type =asset.getAssetType();
                         switch (type){
                             case 0: assetMap.put("assetType", "Software");break;
-                            case 1: assetMap.put("assetType", "Physical");break;
-                            case 2: assetMap.put("assetType", "Information");break;
+                            case 1: assetMap.put("assetType", "Physical");
+                                AssetsPhysical physical = (AssetsPhysical) asset;
+                            assetMap.put("subType",physical.getAssetCategory());
+                            break;
+                            case 2: assetMap.put("assetType", "Information");
+                            AssetsInformation information = (AssetsInformation) asset;
+                            assetMap.put("subType",information.getAssetCategory());
+                                break;
                             case 3: assetMap.put("assetType", "People");break;
                         }
                         assetMap.put("assetOwner", asset.getAssetOwner().getAssetUserName());

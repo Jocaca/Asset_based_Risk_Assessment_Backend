@@ -3,6 +3,7 @@ package com.example.assetbasedriskassessmentplatformbackend.ServiceImpl;
 import com.example.assetbasedriskassessmentplatformbackend.Service.RiskService;
 import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsBasicInfo;
 import com.example.assetbasedriskassessmentplatformbackend.entity.RiskRelationship;
+import com.example.assetbasedriskassessmentplatformbackend.entity.User;
 import com.example.assetbasedriskassessmentplatformbackend.repository.AssetBasicInfoRepository;
 import com.example.assetbasedriskassessmentplatformbackend.repository.RiskRelationshipRepository;
 import com.example.assetbasedriskassessmentplatformbackend.repository.RiskTreatmentRepository;
@@ -14,10 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,11 +48,13 @@ public class RiskServiceImpl implements RiskService {
         try {
             Pageable pageable = PageRequest.of(page, size);
             Page<AssetsBasicInfo> assetsPage = assetBasicInfoRepository.findAssetsWithValidRisksByOwner(userId,pageable);
+            System.out.println("--------------------------"+assetsPage+"------------------------");
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             // 转换数据格式以匹配前端期望的结构
             List<Map<String, Object>> formattedAssets = assetsPage.stream()
                     .map(asset -> {
+                        System.out.println("------------------------"+asset+"----------------------------");
                         Map<String, Object> assetMap = new HashMap<>();
                         assetMap.put("id", asset.getAssetId());
                         assetMap.put("dateAdded", dateFormat.format(asset.getUpdatedAt()));
@@ -71,7 +71,9 @@ public class RiskServiceImpl implements RiskService {
                         List<Map<String,Object>> assetRisks = new ArrayList<>();
                         for(RiskRelationship risk:asset.getRisks()){
                             Map<String, Object> assetRisk = new HashMap<>();
-                            if(risk.getRiskOwner().getAssetUserId() == userId && risk.getValid() == 2) {
+                            System.out.println("------------------------"+risk.getRID() +"----------------------------");
+                            System.out.println("------------------------"+ Optional.ofNullable(risk.getRiskOwner()).isEmpty()+"----------------------------");
+                            if(Optional.ofNullable(risk.getRiskOwner()).isPresent()&& risk.getRiskOwner().getAssetUserId() == userId && risk.getValid() == 2) {
                                 assetRisk.put("risk", risk.getRiskType().getContent());
                                 assetRisk.put("due", dateFormat.format(risk.getDueDate()));
                                 assetRisk.put("id", risk.getRID());
