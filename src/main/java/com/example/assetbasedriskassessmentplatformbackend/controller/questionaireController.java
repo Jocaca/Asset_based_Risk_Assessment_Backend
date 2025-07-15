@@ -44,6 +44,8 @@ public class questionaireController {
         switch (type) {
             case "Software":
                 return questionnaireService.loadSoftware(id);
+            case "People":
+                return questionnaireService.loadPeople(id);
             default:
                 return null;
         }
@@ -64,6 +66,8 @@ public class questionaireController {
         switch (type) {
             case "Software":
                 return questionnaireService.submitSoftware(id,status,answer);
+            case "People":
+                return questionnaireService.submitPeople(id,status,answer);
             default:
                 return null;
         }

@@ -1,14 +1,8 @@
 package com.example.assetbasedriskassessmentplatformbackend.ServiceImpl;
 
 import com.example.assetbasedriskassessmentplatformbackend.Service.QuestionnaireService;
-import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsSoftware;
-import com.example.assetbasedriskassessmentplatformbackend.entity.Questionnaire;
-import com.example.assetbasedriskassessmentplatformbackend.entity.RiskRelationship;
-import com.example.assetbasedriskassessmentplatformbackend.entity.RiskType;
-import com.example.assetbasedriskassessmentplatformbackend.repository.AssetSoftwareRepository;
-import com.example.assetbasedriskassessmentplatformbackend.repository.QuestionnaireRepository;
-import com.example.assetbasedriskassessmentplatformbackend.repository.RiskRelationshipRepository;
-import com.example.assetbasedriskassessmentplatformbackend.repository.RiskTypeRepository;
+import com.example.assetbasedriskassessmentplatformbackend.entity.*;
+import com.example.assetbasedriskassessmentplatformbackend.repository.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +19,9 @@ import static org.hibernate.type.TypeHelper.deepCopy;
 public class QuestionnaireServiceImpl implements QuestionnaireService {
     @Autowired
     private AssetSoftwareRepository assetSoftwareRepository;
+
+    @Autowired
+    private AssetPeopleRepository assetPeopleRepository;
 
     @Autowired
     private QuestionnaireRepository questionnaireRepository;
@@ -75,9 +72,45 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         }
         return ResponseEntity.ok(response);
     }
+    public ResponseEntity<Map<String, Object>> loadPeople(int id) {
+        Map<String, Object> response = new HashMap<>();
+        // Assuming you have a People repository similar to AssetsSoftware
+        AssetsPeople person = assetPeopleRepository.findById((long)id).get();
+        if(person.getQuestionnaire() == null) {
+            response.put("isload", false);
+            response.put("success", true);
+        } else {
+            Questionnaire questionnaire = person.getQuestionnaire();
+            Map<String,Object> map = new HashMap<>();
+            map.put("Q1Status",questionnaire.getQ1());
+            map.put("Q2Status",questionnaire.getQ2());
+            map.put("Q3Status",questionnaire.getQ3());
+            map.put("Q4Status",questionnaire.getQ4());
+            map.put("Q5Status",questionnaire.getQ5());
+            map.put("Q6Status",questionnaire.getQ6());
+            map.put("Q7Status",questionnaire.getQ7());
+            map.put("Q8Status",questionnaire.getQ8());
+            map.put("Q9Status",questionnaire.getQ9());
+            map.put("Q10Status",questionnaire.getQ10());
+            map.put("Q11Status",questionnaire.getQ11());
+            map.put("Q12Status",questionnaire.getQ12());
+            map.put("Q13Status",questionnaire.getQ13());
+            map.put("Q14Status",questionnaire.getQ14());
+            map.put("Q15Status",questionnaire.getQ15());
+            map.put("Q16Status",questionnaire.getQ16());
+            map.put("Q17Status",questionnaire.getQ17());
+            map.put("Q18Status",questionnaire.getQ18());
+            map.put("Q19Status",questionnaire.getQ19());
+            map.put("Q20Status",questionnaire.getQ20());
+            response.put("isload", true);
+            response.put("success", true);
+            response.put("status",map);
+        }
+        return ResponseEntity.ok(response);
+    }
     // 统一处理函数
     private int handleQuestion(String answer, String positiveAnswer,
-                                List<Integer> riskTypes,Integer id,AssetsSoftware asset) {
+                                List<Integer> riskTypes,Integer id,AssetsBasicInfo asset) {
         int count = 0;
         // 获取valid=2和valid=1的记录
         List<RiskRelationship> valid2Records = riskRelationshipRepository.findByAssetIdAndRiskTypeInAndValid(id, riskTypes, 2);
@@ -117,14 +150,10 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         AssetsSoftware asset = assetSoftwareRepository.findById((long)id).get();
         System.out.println("--------------------"+asset.getQuestionnaire()==null+"--------------------------");
         Questionnaire questionnaire;
-        Boolean isNew = false;
-        Questionnaire tempQuestionnaire = new Questionnaire();;;
         if(asset.getQuestionnaire() == null){
             questionnaire = new Questionnaire();
-            isNew = true;
         }else{
             questionnaire = asset.getQuestionnaire();
-            BeanUtils.copyProperties(questionnaire,tempQuestionnaire);
         }
         System.out.println("--------------------"+questionnaire+"--------------------------");
 
@@ -156,7 +185,6 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         questionnaire.setAsset(asset);
         asset.setQStatus(status);
         asset.setQuestionnaire(questionnaire);
-        System.out.println("----------------------------------isnew: "+isNew+"-------------------------");
         System.out.println("--------------------"+questionnaire+"--------------------------");
         questionnaireRepository.save(questionnaire);
         assetSoftwareRepository.save(asset);
@@ -239,6 +267,93 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
             response.put("risk",count);
         }
         response.put("success",true);
+        return ResponseEntity.ok(response);
+    }
+    public ResponseEntity<Map<String, Object>> submitPeople(Integer id, Integer status, Map<String,Object> answer) {
+        Map<String, Object> response = new HashMap<>();
+
+        AssetsPeople asset = assetPeopleRepository.findById((long)id).get();
+        Questionnaire questionnaire;
+        if(asset.getQuestionnaire() == null) {
+            questionnaire = new Questionnaire();
+        } else {
+            questionnaire = asset.getQuestionnaire();
+        }
+
+        questionnaire.setQ1(answer.get("Q1Status").toString());
+        questionnaire.setQ2(answer.get("Q2Status").toString());
+        questionnaire.setQ3(answer.get("Q3Status").toString());
+        questionnaire.setQ4(answer.get("Q4Status").toString());
+        questionnaire.setQ5(answer.get("Q5Status").toString());
+        questionnaire.setQ6(answer.get("Q6Status").toString());
+        questionnaire.setQ7(answer.get("Q7Status").toString());
+        questionnaire.setQ8(answer.get("Q8Status").toString());
+        questionnaire.setQ9(answer.get("Q9Status").toString());
+        questionnaire.setQ10(answer.get("Q10Status").toString());
+        questionnaire.setQ11(answer.get("Q11Status").toString());
+        questionnaire.setQ12(answer.get("Q12Status").toString());
+        questionnaire.setQ13(answer.get("Q13Status").toString());
+        questionnaire.setQ14(answer.get("Q14Status").toString());
+        questionnaire.setQ15(answer.get("Q15Status").toString());
+        questionnaire.setQ16(answer.get("Q16Status").toString());
+        questionnaire.setQ17(answer.get("Q17Status").toString());
+        questionnaire.setQ18(answer.get("Q18Status").toString());
+        questionnaire.setQ19(answer.get("Q19Status").toString());
+        questionnaire.setQ20(answer.get("Q20Status").toString());
+        questionnaire.setAsset(asset);
+        asset.setQStatus(status);
+        asset.setQuestionnaire(questionnaire);
+
+        questionnaireRepository.save(questionnaire);
+        assetPeopleRepository.save(asset);
+
+        if(status == 1) {
+            int count = 0;
+            // Define risk type mappings for each question starting from 124
+            // Q1 - Employee name documentation
+            count += handleQuestion(questionnaire.getQ1(), "Yes", List.of(124), id, asset);
+            // Q2 - Employee ID documentation
+            count += handleQuestion(questionnaire.getQ2(), "Yes", List.of(125), id, asset);
+            // Q3 - Department recording
+            count += handleQuestion(questionnaire.getQ3(), "Yes", List.of(126), id, asset);
+            // Q4 - Role definition
+            count += handleQuestion(questionnaire.getQ4(), "Yes", List.of(127), id, asset);
+            // Q5 - Access permissions linkage
+            count += handleQuestion(questionnaire.getQ5(), "Yes", List.of(128), id, asset);
+            // Q6 - Security training
+            count += handleQuestion(questionnaire.getQ6(), "Yes", List.of(129), id, asset);
+            // Q7 - Security clearance
+            count += handleQuestion(questionnaire.getQ7(), "Yes", List.of(130), id, asset);
+            // Q8 - Asset list
+            count += handleQuestion(questionnaire.getQ8(), "Yes", List.of(131), id, asset);
+            // Q9 - Asset purpose documentation
+            count += handleQuestion(questionnaire.getQ9(), "Yes", List.of(132), id, asset);
+            // Q10 - Asset responsibility
+            count += handleQuestion(questionnaire.getQ10(), "Yes", List.of(133), id, asset);
+            // Q11 - Remote work agreement
+            count += handleQuestion(questionnaire.getQ11(), "Yes", List.of(134), id, asset);
+            // Q12 - Access audit
+            count += handleQuestion(questionnaire.getQ12(), "Yes", List.of(135), id, asset);
+            // Q13 - Incident record
+            count += handleQuestion(questionnaire.getQ13(), "Yes", List.of(136), id, asset);
+            // Q14 - Incident review
+            count += handleQuestion(questionnaire.getQ14(), "Yes", List.of(137), id, asset);
+            // Q15 - Access review
+            count += handleQuestion(questionnaire.getQ15(), "Yes", List.of(138), id, asset);
+            // Q16 - Access approver
+            count += handleQuestion(questionnaire.getQ16(), "Yes", List.of(139), id, asset);
+            // Q17 - Security drills
+            count += handleQuestion(questionnaire.getQ17(), "Yes", List.of(140), id, asset);
+            // Q18 - Social engineering awareness
+            count += handleQuestion(questionnaire.getQ18(), "Yes", List.of(141), id, asset);
+            // Q19 - Role change updates
+            count += handleQuestion(questionnaire.getQ19(), "Yes", List.of(142), id, asset);
+            // Q20 - Workplace recording
+            count += handleQuestion(questionnaire.getQ20(), "Yes", List.of(143), id, asset);
+
+            response.put("risk", count);
+        }
+        response.put("success", true);
         return ResponseEntity.ok(response);
     }
 }

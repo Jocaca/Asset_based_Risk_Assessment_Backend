@@ -7,5 +7,7 @@ import java.util.Map;
 
 public interface QuestionnaireService {
     ResponseEntity<Map<String, Object>> loadSoftware(int id);
+    ResponseEntity<Map<String, Object>> loadPeople(int id);
     ResponseEntity<Map<String, Object>> submitSoftware(Integer id,Integer status, Map<String,Object> answer);
+    ResponseEntity<Map<String, Object>> submitPeople(Integer id, Integer status, Map<String,Object> answer);
 }
