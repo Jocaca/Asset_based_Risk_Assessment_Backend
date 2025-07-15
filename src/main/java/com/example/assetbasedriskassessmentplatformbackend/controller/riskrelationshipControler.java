@@ -52,5 +52,22 @@ public class riskrelationshipControler {
     
     
 }
+
+  @PostMapping("/api/risk_relationship/change/{id}")
+    public ResponseEntity<String> updateTreatmentStatus(@PathVariable Long id) {
+        String sql = "UPDATE risk_relationship SET treatment_status = 1 WHERE rid = ?";
+        try {
+            // Execute the update query
+            int rowsAffected = jdbcTemplate.update(sql, id);
+            if (rowsAffected > 0) {
+                return ResponseEntity.ok("Treatment status updated successfully.");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Risk relationship not found.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update treatment status.");
+        }
+    }
     
 }
