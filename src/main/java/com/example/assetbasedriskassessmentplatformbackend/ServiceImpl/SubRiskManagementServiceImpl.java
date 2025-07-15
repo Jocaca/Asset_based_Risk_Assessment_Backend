@@ -527,8 +527,20 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
             details.put("treatmentOption", treatmentOption);
 
             // Get evidence files
-            List<String> evidenceFiles = t.getEvidenceFiles().stream()
-                    .map(Files::getStoredName)
+         //   List<String> evidenceFiles = t.getEvidenceFiles().stream()
+         //           .map(Files::getStoredName)
+         //           .collect(Collectors.toList());
+         //   details.put("evidence", evidenceFiles);
+
+            // Get evidence files - return both stored name and file path
+            List<Map<String, String>> evidenceFiles = t.getEvidenceFiles().stream()
+                    .map(file -> {
+                        Map<String, String> fileInfo = new HashMap<>();
+                        fileInfo.put("storedName", file.getStoredName());
+                        fileInfo.put("filePath", file.getFilePath());
+                        fileInfo.put("originalName", file.getOriginalName());
+                        return fileInfo;
+                    })
                     .collect(Collectors.toList());
             details.put("evidence", evidenceFiles);
 
