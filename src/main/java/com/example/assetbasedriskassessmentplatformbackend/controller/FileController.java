@@ -55,11 +55,11 @@ public class FileController {
             file.transferTo(filePath.toFile());
 
             // // 保存文件信息到数据库
-            String insertFileSql = "INSERT INTO files (file_path, file_type, original_name, stored_name,treatment_id) " +
-                     "VALUES (?, ?, ?, ?,?)";
+            String insertFileSql = "INSERT INTO files (file_path, original_name, stored_name,treatment_id) " +
+                     "VALUES (?, ?, ?, ?)";
 
             // // 执行插入操作
-            jdbcTemplate.update(insertFileSql, filePath.toString(), file.getContentType(), originalFileName, storedFileName,rid);
+            jdbcTemplate.update(insertFileSql, filePath.toString(), originalFileName, storedFileName,rid);
 
             return "File uploaded successfully";
         } catch (IOException e) {
