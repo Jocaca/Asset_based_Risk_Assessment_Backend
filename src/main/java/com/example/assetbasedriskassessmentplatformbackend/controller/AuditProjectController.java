@@ -46,6 +46,41 @@ public class AuditProjectController {
             response.put("message", "Failed to fetch audit projects.");
             return ResponseEntity.status(500).body(response);
         }
-    }
+    };
+
+
+      // 更新审计项目的 auditor
+    @PostMapping("/api/updateauditproject/{auditProjectId}/{userId}")
+    public ResponseEntity<Map<String, Object>> updateAuditProjectAuditor(
+            @PathVariable int auditProjectId, @PathVariable int userId) {
+        
+        Map<String, Object> response = new HashMap<>();
+        
+        // SQL 查询：更新指定审计项目的 auditor 列
+        String sql = "UPDATE audit_project SET auditor = ? WHERE id = ?";
+        
+        try {
+            // 执行更新操作
+            int rowsAffected = jdbcTemplate.update(sql, userId, auditProjectId);
+            
+            // 如果没有更新任何行，说明没有找到对应的审计项目
+            if (rowsAffected == 0) {
+                response.put("success", false);
+                response.put("message", "Audit project not found.");
+                return ResponseEntity.status(404).body(response);
+            }
+            
+            // 返回成功响应
+            response.put("success", true);
+            response.put("message", "Audit project auditor updated successfully.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            // 处理异常
+            System.err.println("Error updating audit project auditor: " + e.getMessage());
+            response.put("success", false);
+            response.put("message", "Failed to update auditor.");
+            return ResponseEntity.status(500).body(response);
+        }
+    };
     
 }
