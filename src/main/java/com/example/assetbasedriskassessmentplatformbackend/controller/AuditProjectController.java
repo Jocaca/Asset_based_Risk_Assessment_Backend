@@ -17,36 +17,67 @@ public class AuditProjectController {
     private JdbcTemplate jdbcTemplate;
 
     // 获取所有 auditor 列为空的审计项目
+    // @GetMapping("/api/audit_project/available")
+    // public ResponseEntity<Map<String, Object>> getAvailableAuditProjects() {
+    //     Map<String, Object> response = new HashMap<>();
+        
+    //     // SQL 查询：获取 auditor 列为空的所有审计项目
+    //     String sql = "SELECT id, name FROM audit_project WHERE auditor IS NULL";
+        
+    //     try {
+    //         // 执行查询，获取结果
+    //         List<Map<String, Object>> auditProjects = jdbcTemplate.queryForList(sql);
+            
+    //         // 判断是否有结果
+    //         if (auditProjects.isEmpty()) {
+    //             response.put("success", false);
+    //             response.put("message", "No available audit projects found.");
+    //             return ResponseEntity.ok(response);
+    //         }
+            
+    //         // 将结果封装到 response 中
+    //         response.put("success", true);
+    //         response.put("projects", auditProjects);
+    //         return ResponseEntity.ok(response);
+    //     } catch (Exception e) {
+    //         // 处理异常
+    //         System.err.println("Error fetching audit projects: " + e.getMessage());
+    //         response.put("success", false);
+    //         response.put("message", "Failed to fetch audit projects.");
+    //         return ResponseEntity.status(500).body(response);
+    //     }
+    // };
+
     @GetMapping("/api/audit_project/available")
-    public ResponseEntity<Map<String, Object>> getAvailableAuditProjects() {
-        Map<String, Object> response = new HashMap<>();
+public ResponseEntity<Map<String, Object>> getAvailableAuditProjects() {
+    Map<String, Object> response = new HashMap<>();
+    
+    // 修改后的 SQL 查询：获取所有审计项目，不再限制 auditor 列为空
+    String sql = "SELECT id, name FROM audit_project";
+    
+    try {
+        // 执行查询，获取结果
+        List<Map<String, Object>> auditProjects = jdbcTemplate.queryForList(sql);
         
-        // SQL 查询：获取 auditor 列为空的所有审计项目
-        String sql = "SELECT id, name FROM audit_project WHERE auditor IS NULL";
-        
-        try {
-            // 执行查询，获取结果
-            List<Map<String, Object>> auditProjects = jdbcTemplate.queryForList(sql);
-            
-            // 判断是否有结果
-            if (auditProjects.isEmpty()) {
-                response.put("success", false);
-                response.put("message", "No available audit projects found.");
-                return ResponseEntity.ok(response);
-            }
-            
-            // 将结果封装到 response 中
-            response.put("success", true);
-            response.put("projects", auditProjects);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            // 处理异常
-            System.err.println("Error fetching audit projects: " + e.getMessage());
+        // 判断是否有结果
+        if (auditProjects.isEmpty()) {
             response.put("success", false);
-            response.put("message", "Failed to fetch audit projects.");
-            return ResponseEntity.status(500).body(response);
+            response.put("message", "No available audit projects found.");
+            return ResponseEntity.ok(response);
         }
-    };
+        
+        // 将结果封装到 response 中
+        response.put("success", true);
+        response.put("projects", auditProjects);
+        return ResponseEntity.ok(response);
+    } catch (Exception e) {
+        // 处理异常
+        System.err.println("Error fetching audit projects: " + e.getMessage());
+        response.put("success", false);
+        response.put("message", "Failed to fetch audit projects.");
+        return ResponseEntity.status(500).body(response);
+    }
+};
 
 
       // 更新审计项目的 auditor
@@ -72,7 +103,7 @@ public class AuditProjectController {
             
             // 返回成功响应
             response.put("success", true);
-            response.put("message", "Audit project auditor updated successfully.");
+            //response.put("message", "Audit project auditor updated successfully.");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             // 处理异常
