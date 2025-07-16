@@ -374,8 +374,13 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
         }
 
 
-        //默认当前的treatmentstatus 为0
-        record.setTreatmentStatus(0);
+        // 根据applicable的值设置treatmentStatus
+        if (applicable != null && applicable) {  // 如果applicable是true(1)
+            record.setTreatmentStatus(0);
+        } else {  // 如果applicable是false(不是1)
+            record.setTreatmentStatus(1);
+        }
+
         //进入调用的时候 done是true ； save是false
         record.setValid(isFinal ? 2 : 1);
         //首次创建 需要写入createDate
@@ -401,6 +406,13 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
         //save 变为Done  ; 更新的date
         if(isFinal){
             record.setCreateDate(new Date());
+        }
+
+        // 根据applicable的值设置treatmentStatus
+        if (applicable != null && applicable) {  // 如果applicable是true(1)
+            record.setTreatmentStatus(0);
+        } else {  // 如果applicable是false(不是1)
+            record.setTreatmentStatus(1);
         }
 
 
