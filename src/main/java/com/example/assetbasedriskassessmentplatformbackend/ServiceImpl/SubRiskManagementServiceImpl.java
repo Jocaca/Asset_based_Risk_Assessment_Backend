@@ -65,6 +65,8 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
                     })
                     .collect(Collectors.toList());
 
+            checkAndUpdateAssetStatus(assetId);
+
             response.put("success", true);
             response.put("data", riskTypeData);
             return ResponseEntity.ok(response);
