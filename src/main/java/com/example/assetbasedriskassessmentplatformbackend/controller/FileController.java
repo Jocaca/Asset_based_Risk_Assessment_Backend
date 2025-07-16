@@ -55,12 +55,14 @@ public class FileController {
             //固定路径先
             file.transferTo(filePath.toFile());
 
+            String storedFilePath = "http://localhost:8081/files/evidence/" + storedFileName;
+
             // // 保存文件信息到数据库
             String insertFileSql = "INSERT INTO files (file_path, original_name, stored_name,treatment_id) " +
                      "VALUES (?, ?, ?, ?)";
 
             // // 执行插入操作
-            jdbcTemplate.update(insertFileSql, filePath.toString(), originalFileName, storedFileName,rid);
+            jdbcTemplate.update(insertFileSql,storedFilePath, originalFileName, storedFileName,rid);
 
             return "File uploaded successfully";
         } catch (IOException e) {

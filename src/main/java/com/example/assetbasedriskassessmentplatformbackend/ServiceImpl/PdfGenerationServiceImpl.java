@@ -185,7 +185,7 @@ public class PdfGenerationServiceImpl implements PdfGenerationService {
         }
         Anchor link = new Anchor(linkText,
                 FontFactory.getFont(FontFactory.HELVETICA, 10, BaseColor.BLUE));
-        link.setReference("http://localhost:8081/pdf-storage/inventory/"+inventoryPdfUrl);
+        link.setReference("http://localhost:8081/files/pdf-storage/inventory/"+inventoryPdfUrl);
 
         PdfPCell valueCell = new PdfPCell();
         valueCell.setBorder(Rectangle.NO_BORDER);
@@ -240,7 +240,7 @@ public class PdfGenerationServiceImpl implements PdfGenerationService {
         }
         Anchor link = new Anchor(linkText,
                 FontFactory.getFont(FontFactory.HELVETICA, 10, BaseColor.BLUE));
-        link.setReference("http://localhost:8081/pdf-storage/questionnaires/"+QuestionnairePdfUrl);
+        link.setReference("http://localhost:8081/files/pdf-storage/questionnaires/"+QuestionnairePdfUrl);
 
         PdfPCell valueCell = new PdfPCell();
         valueCell.setBorder(Rectangle.NO_BORDER);
