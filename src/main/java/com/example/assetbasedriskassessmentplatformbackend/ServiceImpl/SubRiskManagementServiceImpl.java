@@ -582,7 +582,30 @@ public class SubRiskManagementServiceImpl implements SubRiskManagementService {
                 .allMatch(r -> r.getTreatmentStatus() == 1);
 
         // 3. 如果全部完成，则更新 Asset 状态
-        if (allFinished) {
+        if (!relationships.isEmpty()&&allFinished) {
+            AssetsBasicInfo asset = assetRepo.findByAssetId(assetId)
+                    .orElseThrow(() -> new RuntimeException("Asset not found"));
+            asset.setRtStatus(1); // 1 表示 FINISH
+            assetRepo.save(asset);
+        }else{
+            AssetsBasicInfo asset = assetRepo.findByAssetId(assetId)
+                    .orElseThrow(() -> new RuntimeException("Asset not found"));
+            asset.setRtStatus(0); // 1 表示 FINISH
+            assetRepo.save(asset);
+        }
+    }
+    public void checkAndUpdateAssetStatus1(Integer rid) {
+        RiskRelationship rr = riskRelationshipRepo.getReferenceById(rid);
+        int assetId = rr.getAsset().getAssetId();
+        // 1. 查询当前 Asset 下所有有效的 risk_relationship 记录
+        List<RiskRelationship> relationships = riskRelationshipRepo.findByAssetIdAndValid(assetId, 2);
+
+        // 2. 检查是否所有记录的 treatment_status 均为 "1"
+        boolean allFinished = relationships.stream()
+                .allMatch(r -> r.getTreatmentStatus() == 1);
+
+        // 3. 如果全部完成，则更新 Asset 状态
+        if (!relationships.isEmpty()&&allFinished) {
             AssetsBasicInfo asset = assetRepo.findByAssetId(assetId)
                     .orElseThrow(() -> new RuntimeException("Asset not found"));
             asset.setRtStatus(1); // 1 表示 FINISH

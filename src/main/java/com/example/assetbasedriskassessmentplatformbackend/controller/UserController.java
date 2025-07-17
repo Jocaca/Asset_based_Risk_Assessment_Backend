@@ -33,6 +33,7 @@ public class UserController {
 
     @GetMapping("/search-auditor")
     public ResponseEntity<Map<String, Object>> searchAuditor(@RequestParam String query) {
+        System.out.println("search-auditor");
         return userService.searchAuditor(query);
     }
 

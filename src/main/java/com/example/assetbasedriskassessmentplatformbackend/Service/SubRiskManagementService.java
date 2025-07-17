@@ -19,4 +19,5 @@ public interface SubRiskManagementService {
     ResponseEntity<Map<String, Object>> getTreatmentDetails(Integer rid);
 
     ResponseEntity<Map<String, Object>> getValidRiskRelationships(Integer assetId, Integer typeID);
+    void checkAndUpdateAssetStatus1(Integer rid);
 }

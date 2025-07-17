@@ -1,5 +1,6 @@
 package com.example.assetbasedriskassessmentplatformbackend.controller;
 
+import com.example.assetbasedriskassessmentplatformbackend.Service.SubRiskManagementService;
 import com.example.assetbasedriskassessmentplatformbackend.Service.UserService;
 import com.example.assetbasedriskassessmentplatformbackend.entity.AssetsBasicInfo;
 
@@ -33,6 +34,8 @@ public class riskrelationshipControler {
 
    @Autowired
     private JdbcTemplate jdbcTemplate;
+   @Autowired
+    private SubRiskManagementService subRiskManagementService;
 
     @GetMapping("/api/risk_relationship/{rid}")
     public String getComments(@PathVariable int rid) {
@@ -54,11 +57,12 @@ public class riskrelationshipControler {
 }
 
   @PostMapping("/api/risk_relationship/change/{id}")
-    public ResponseEntity<String> updateTreatmentStatus(@PathVariable Long id) {
+    public ResponseEntity<String> updateTreatmentStatus(@PathVariable int id) {
         String sql = "UPDATE risk_relationship SET treatment_status = 1 WHERE rid = ?";
         try {
             // Execute the update query
             int rowsAffected = jdbcTemplate.update(sql, id);
+            subRiskManagementService.checkAndUpdateAssetStatus1(id);
             if (rowsAffected > 0) {
                 return ResponseEntity.ok("Treatment status updated successfully.");
             } else {
