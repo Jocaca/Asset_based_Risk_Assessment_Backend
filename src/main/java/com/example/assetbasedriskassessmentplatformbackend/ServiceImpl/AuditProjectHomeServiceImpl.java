@@ -26,121 +26,6 @@ public class AuditProjectHomeServiceImpl implements AuditProjectHomeService {
     @Autowired
     private UserRepository userRepository;
 
-    /*
-    @Override
-    public ResponseEntity<Map<String, Object>> getAllProjects(int page, int size) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            List<AuditProject> projects = auditProjectHomeRepository.findAll();
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            List<Map<String, Object>> formattedProjects = projects.stream()
-                    .map(project -> {
-                        Map<String, Object> projectMap = new HashMap<>();
-                        projectMap.put("id", project.getId());
-                        projectMap.put("date", dateFormat.format(project.getCreatedDate()));
-                        projectMap.put("name", project.getName());
-                        projectMap.put("createdBy", project.getCreated_by().getAssetUserName());
-                        projectMap.put("status", project.getStatus() == 0 ? "in-progress" : "finished");
-                        //projectMap.put("auditor", project.getAuditor().getAssetUserId());
-
-                        Integer auditorId = Optional.ofNullable(project.getAuditor())
-                                .map(User::getAssetUserId)
-                                .orElse(null);
-                        projectMap.put("auditorId", auditorId);
-
-                        return projectMap;
-                    })
-                    .collect(Collectors.toList());
-
-            System.out.println("---------------------------");
-
-            response.put("success", true);
-            response.put("data", formattedProjects);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "获取项目数据失败: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
-    @Override
-    public ResponseEntity<Map<String, Object>> getFilteredProjects(int page, int size, int status) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            List<AuditProject> projects = auditProjectHomeRepository.findFilteredProjects(status,
-                    PageRequest.of(page, size));
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            List<Map<String, Object>> formattedProjects = projects.stream()
-                    .map(project -> {
-                        Map<String, Object> projectMap = new HashMap<>();
-                        projectMap.put("id", project.getId());
-                        projectMap.put("date", dateFormat.format(project.getCreatedDate()));
-                        projectMap.put("name", project.getName());
-                        projectMap.put("createdBy", project.getCreated_by().getAssetUserName());
-                        projectMap.put("status", project.getStatus() == 0 ? "in-progress" : "finished");
-                        //projectMap.put("auditor", project.getAuditor().getAssetUserId());
-
-                        Integer auditorId = Optional.ofNullable(project.getAuditor())
-                                .map(User::getAssetUserId)
-                                .orElse(null);
-                        projectMap.put("auditorId", auditorId);
-
-
-                        return projectMap;
-                    })
-                    .collect(Collectors.toList());
-
-            response.put("success", true);
-            response.put("data", formattedProjects);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "获取过滤项目数据失败: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
-    @Override
-    public ResponseEntity<Map<String, Object>> getSearchProjects(int page, int size, String searchTerm) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            List<AuditProject> projects = auditProjectHomeRepository.findSearchProjects(searchTerm,
-                    PageRequest.of(page, size));
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            List<Map<String, Object>> formattedProjects = projects.stream()
-                    .map(project -> {
-                        Map<String, Object> projectMap = new HashMap<>();
-                        projectMap.put("id", project.getId());
-                        projectMap.put("date", dateFormat.format(project.getCreatedDate()));
-                        projectMap.put("name", project.getName());
-                        projectMap.put("createdBy", project.getCreated_by().getAssetUserName());
-                        projectMap.put("status", project.getStatus() == 0 ? "in-progress" : "finished");
-                        // projectMap.put("auditor", project.getAuditor().getAssetUserId());
-
-                        Integer auditorId = Optional.ofNullable(project.getAuditor())
-                                .map(User::getAssetUserId)
-                                .orElse(null);
-                        projectMap.put("auditorId", auditorId);
-
-                        return projectMap;
-                    })
-                    .collect(Collectors.toList());
-
-            response.put("success", true);
-            response.put("data", formattedProjects);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "获取搜索项目数据失败: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
-     */
 
     @Override
     public ResponseEntity<Map<String, Object>> getAllProjects(int page, int size, int userId, int userLevel) {
@@ -398,7 +283,12 @@ public class AuditProjectHomeServiceImpl implements AuditProjectHomeService {
         for (AuditProject auditProject : auditProjects) {
             Map<String, Object> auditMap = new HashMap<>();
             auditMap.put("id", auditProject.getId());
-            auditMap.put("name", auditProject.getName()); // 假设name存储在username字段
+            auditMap.put("name", auditProject.getName());// 假设name存储在username字段
+            if(auditProject.getAuditor()==new User()){
+                auditMap.put("owner", "");
+            }else{
+                auditMap.put("owner", auditProject.getAuditor().getAssetUserName());
+            }
             auditProjectList.add(auditMap);
         }
 
